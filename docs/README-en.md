@@ -12,14 +12,14 @@ Be sure to keep the following information in mind after creating:
 
 `Access Token` User id card (visible for application only)
 
-## Interface authentication
+## Authentication
 
-The interfaces provided by Hubi include both public and private interfaces.
+The API provided by Hubi include both public and private.
 
-The public interface can be used to obtain market data and can be invoked without authentication.
-The private interface can be used to obtain the underlying data, transaction management, and each private request must be signed using the API Key.
+The public API can be used to obtain market data and can be invoked without authentication.
+The private API can be used to obtain the underlying data, transaction management, and each private request must be signed using the API Key.
 
-## Access to the URLs
+## URLs
 
 | Type        | URL                              | Description                                 |
 | ----------- | -------------------------------- | ------------------------------------------- |
@@ -54,7 +54,7 @@ A valid request header should contain the following information：
 
 `URL`：POST /api/entrust/current/top
 
-`参数`：top=100,coin_code=HUB,price_coin_code=USDT
+`Parameters`：top=100,coin_code=HUB,price_coin_code=USDT
 
 `Access Key` : <font color=#AD18C7>14e5aa14f20345cbaf020e9b8562cbd6</font>
 
@@ -260,9 +260,9 @@ GET /api/coin/coin_pairs_param/pairses
 | coinPairs[0].pairsPricePrecision | number  | Precision of value in quote currency |
 | coinPairs[0].pairsVolumePrecision | number  | Base currency precision when quote amount(decimal places) |
 | coinPairs[0].marketBuyMin      | number  | Minimum market buy order amount |
-| coinPairs[0].marketBuyMax      | number  | Max market buy order amount |
+| coinPairs[0].marketBuyMax      | number  | Maximum market buy order amount |
 | coinPairs[0].marketSellMin     | number  | Minimum market sell order amount |
-| coinPairs[0].marketSellMax     | number  | Max market sell order amount |
+| coinPairs[0].marketSellMax     | number  | Maximum market sell order amount |
 | coinPairs[0].tradeStatus       | boolean | status       |
 | coinPairs[0].openPrice         | number  | Opening price |
 | coinPairs[0].marketRegion      | String  | Trading section, possible values: [main，innovation] |
