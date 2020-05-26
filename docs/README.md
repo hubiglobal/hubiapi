@@ -28,7 +28,7 @@ Hubi提供的接口包括公共接口和私有接口两种类型。
 | WebSocket   | wss://api.hubi.com/ws/connect/v1 |                                           |
 | *WebSocket* | *wss://api.hubi.com/was*         | <font color="#F70000">**即将废弃**</font> |
 
-## 签名认证
+## 签名
 
 签名说明
 
@@ -473,6 +473,7 @@ Content-Type: application/x-www-form-urlencoded; charset=utf-8
 | FAIL     | 委托之前已经标记为撤销失败 |
 
 - 错误码
+
 | message                      | 解释           |
 | ---------------------------- | -------------- |
 | entrust_trade_deny           | 用户被禁止交易 |
@@ -741,19 +742,24 @@ GET /api/entrust/info
 
 - 返回对象说明
 
-| 字段           | 类型   | 说明         |
-| -------------- | ------ | ------------ |
-| entrustNumber  | String | 委托单号     |
-| coinCode       | String | 交易币       |
-| priceCoinCode  | String | 定价币       |
-| direction      | String | 买卖方向     |
-| entrustPrice   | Number | 委托价       |
-| entrustCount   | Number | 委托数量     |
-| entrustTime    | Date   | 委托时间     |
-| entrustWay     | String | 委托类型     |
-| turnover       | Number | 成交数量数量 |
-| processedPrice | Number | 成交均价     |
-| status         | String | 委托单状态   |
+| 字段                | 类型   | 说明         |
+| --------------        | ------ | ------------ |
+| surplusCount          | Number | 剩余数量         |
+| transactionCount      | Number | 成交数量         |
+| canceledAmount        | Number | 撤销数量     |
+| direction             | String | 买卖方向         |
+| coinCode              | String | 交易币          | 
+| priceCoinCode         | String | 定价币      |
+| customerId            | String | 用户ID         |
+| way                   | String | 委托类型         |
+| price                 | Number | 委托价格         |
+| count                 | Number | 委托数量         |
+| transactionSum        | Number | 成交总额     |
+| triggerPrice          | Number | 触发价          |
+| millisTime            | long   | 下单时间戳，毫秒   |
+| processedPrice        | Number | 成交均价     |
+| entrustTime           | Date   | 下单时间     |
+| status                | String | 委托单状态    |
 
   
 
