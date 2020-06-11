@@ -22,11 +22,11 @@ Hubi提供的接口包括公共接口和私有接口两种类型。
 
 ## 接入URLs
 
-| 类型        | URL                              | 说明                                      |
-| ----------- | -------------------------------- | ----------------------------------------- |
-| RESTful     | https://api.hubi.com             |                                           |
-| WebSocket   | wss://api.hubi.com/ws/connect/v1 |                                           |
-| *WebSocket* | *wss://api.hubi.com/was*         | <font color="#F70000">**即将废弃**</font> |
+| 类型        | URL                                                                 | 说明                                      |
+| ----------- | ------------------------------------------------------------------- | ----------------------------------------- |
+| RESTful     | https://api.hubi.com 或 https://api.hubi.pub                        | 国内使用.pub                              |
+| WebSocket   | wss://api.hubi.com/ws/connect/v1 或 wss://api.hubi.pub/ws/connect/v1| 国内使用.pub                              |
+| *WebSocket* | *wss://api.hubi.com/was*                                            | <font color="#F70000">**即将废弃**</font> |
 
 ## 签名
 
