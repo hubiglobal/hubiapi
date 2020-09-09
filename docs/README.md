@@ -1,8 +1,8 @@
-# HUBI API 文档
+# 合约 API 文档
 
 ##  接入准备
 
-您需要先登录[网页端](https://www.hubi.com/zh/api/setting)申请API key，必要的话须设置访问白名单权限，默认不限制。
+您需要先登录[网页端](https://www.hubi.pub/zh/api/setting)申请API key，必要的话须设置访问白名单权限，默认不限制。
 
 创建成功后请务必记住以下信息：
 
@@ -22,17 +22,16 @@ Hubi提供的接口包括公共接口和私有接口两种类型。
 
 ## 接入URLs
 
-| 类型        | URL                                                                 | 说明                                      |
-| ----------- | ------------------------------------------------------------------- | ----------------------------------------- |
-| RESTful     | https://api.hubi.com 或 https://api.hubi.pub                        | 国内使用.pub                              |
-| WebSocket   | wss://api.hubi.com/ws/connect/v1 或 wss://api.hubi.pub/ws/connect/v1| 国内使用.pub                              |
-| *WebSocket* | *wss://api.hubi.com/was*                                            | <font color="#F70000">**即将废弃**</font> |
+| 类型      | URL                                          | 说明         |
+| --------- | -------------------------------------------- | ------------ |
+| REST      | https://api.hubi.com 或 https://api.hubi.pub | 国内使用.pub |
+| WebSocket | wss://api.hubi.com 或 wss://api.hubi.pub     | 国内使用.pub |
 
 ## 签名
 
 签名说明
 
-API 请求在通过 internet 传输的过程中极有可能被篡改，为了确保请求未被更改，除公共接口（行情数据）外的私有接口均必须使用您的 API Key 做签名认证，以校验参数或参数值在传输途中是否发生了更改。
+REST API 请求在通过 internet 传输的过程中极有可能被篡改，为了确保请求未被更改，除公共接口（行情数据）外的私有接口均必须使用您的 API Key 做签名认证，以校验参数或参数值在传输途中是否发生了更改。
 
 一个合法的请求头部需包含以下信息：
 
@@ -87,837 +86,76 @@ API 请求在通过 internet 传输的过程中极有可能被篡改，为了确
 
 
 
-## 接口索引
+## 交易 REST API
 
-### RESTful API
+URL: https://api.hubi.com 或 https://api.hubi.pub
 
-URL: https://api.hubi.com
+### API 列表
 
 | 接口                                                         | 说明                               |
 | ------------------------------------------------------------ | ---------------------------------- |
-| [`GET /api/user`](#user)                                     | 获取用户信息                     |
-| [`POST /api/asset/user/customer_asset_info/additional`](#asset) | 查询资产                         |
-| [`GET /api/coin/coin_base_info/simple`](#coin)               | 获取币种                         |
-| [`GET /api/coin/coin_pairs_param/pairses`](#symbol)          | 获取交易对                       |
-| [`POST /api/engine/entrust/fix`](#fix)                              | 下限价委托单                     |
-| [`PUT /api/engine/entrust/cancel/v1`](#revocation)                            | 撤销委托                         |
-| [`POST /api/engine/entrust/cancel/batch/v1`](#revocation_batch)                            | 批量撤销委托                         |
-| [`POST /api/entrust/current/top`](#current) | 查询当前委托 |
-| [`POST /api/entrust/exchange/slice/history/user`](#history)        | 查询历史委托   |
-| [`GET /api/entrust/info`](#entrust_info) | 根据委托单号查询委托             |
-| [`GET /api/entrust/order/info`](#order_info) | 根据委托单号查询成交单          |
-| [`GET /api/connect/public/market/depth/{symbol}`](#market_depth) | 买卖盘行情 |
-| [`GET /api/connect/public/market/trade/{symbol}`](#market_trade) | 成交行情 |
-
-### WebSocket
-
-URL: wss://api.hubi.com/ws/connect/v1
-
-原来的 `wss://api.hubi.com/was`（即将废弃）
-
-Hubi 的websocket订阅只有一个地址 `wss://api.hubi.com/ws/connect/v1`，支持以下订阅
-
-| 主题                             | 推送方式 |
-| -------------------------------- | -------- |
-| [`买卖盘行情`](#depth)           | 全量推送 |
-| [`成交行情`](#trade)             | 增量推送 |
-| [`24小时成交量`](#statistics_24) | 增量推送 |
+| [`GET /api/futures/query_orders_pro`](#query_orders_pro) | 获取用户的增量订单列表（返回上次请求到当前时间之间的订单） |
+| [`GET /api/futures/query_order_by_id`](#query_order_by_id) | 查询当前用户的某个合约订单 |
+| [`GET /api/futures/query_accounts`](#query_accounts) | 查询当前用户的合约资产 |
+| [`GET /api/futures/query_position`](#query_position) | 查询当前用户的合约仓位 |
+| [`GET /api/futures/query_active_orders`](#query_active_orders) | 查询当前用户未完成的合约订单 |
+| [`POST /api/futures/enter_order`](#enter_order) | 当前用户合约开平仓 |
+| [`POST /api/futures/cancel_order`](#cancel_order) | 取消当前用户的合约订单 |
+| [`POST /api/futures/cancel_order_batch`](#cancel_order_batch) | 批量取消当前用户的合约订单 |
+| [`POST /api/futures/close_position`](#close_position) | 当前用户仓位全平 |
+| [`POST /api/futures/switch_to_cross`](#switch_to_cross) | 当前用户切换为全仓模式 |
+| [`POST /api/futures/switch_position_side`](#switch_position_side) | 当前用户切换单双向持仓模式 |
+| [`POST /api/futures/change_position_leverage`](#change_position_leverage) | 切换当前用户的持仓杠杆 |
+| [`POST /api/futures/risk_setting`](#risk_setting) | 修改当前用户的合约持仓 |
+| [`POST /api/futures/amend_order`](#amend_order) | 修改当前用户的合约订单 |
 
 
-## 基础信息查询
 
-
-### <span id="coin">获取币种</span>
+### <span id="query_orders_pro">获取用户的合约增量订单列表(返回上次请求到当前时间之间的订单)</span>
 
 - 地址
 
 ```http
-GET /api/coin/coin_base_info/simple
-```
-- 请求参数
-
-  （无）
-  
-- 响应
-
-```json
-[
-    { "id": "7KG95RD10U1KHDDCE4U8", "coinCode": "BTC" },
-    { "id": "7KG95RD10U1KHDDCE4U9", "coinCode": "USDT" },
-]
-```
-
-
-- 返回对象说明
-
-| 字段     | 类型   | 说明     |
-| -------- | ------ | -------- |
-| id       | String |          |
-| coinCode | String | 货币代码 |
-
-
-
-### <span id="symbol">获取交易对</span>
-
-- 地址
-
-```http
-GET /api/coin/coin_pairs_param/pairses
-```
-
-- 请求参数
-
-  （无）
-
-- 响应
-
-```json
-[
-    {
-        "coinCode": "USDT",
-        "coinParisStr": "BTC_USDT,ETH_USDT",
-        "coinPairs": [
-            {
-                "id": "8a80803267a2ed080167a6be32391d19",
-                "version": 115,
-                "createdBy": "system",
-                "createdTime": "2018-12-13 16:45:42",
-                "lastModifiedBy": "02",
-                "lastModifiedTime": "2020-01-13 14:31:36",
-                "coinPairsNumber": 10011000,
-                "coinCode": "BTC",
-                "priceCoinCode": "USDT",
-                "buyFeeRate": 1,
-                "sellFeeRate": 2,
-                "maxIncrease": 100,
-                "maxDecline": 100,
-                "minOrderLimit": 0.001,
-                "maxOrderLimit": 10,
-                "pairsPricePrecision": 9,
-                "pairsVolumePrecision": 10,
-                "marketBuyMin": 0.01,
-                "marketBuyMax": 100,
-                "marketSellMin": 0.01,
-                "marketSellMax": 100,
-                "marketMatchDepth": 5,
-                "closeEnable": false,
-                "tradeStatus": true,
-                "yesterdayClosePrice": 3380,
-                "checkStatus": true,
-                "commission": null,
-                "openPrice": 80,
-                "sort": null,
-                "defaultCoinPairs": null,
-                "unionPairsTradeStatus": false,
-                "marketRegion": "MAIN_MARKET"
-            },
-            {
-                "id": "8a80803267a2ed080167a6be5e9f1d25",
-                "version": 101,
-                "createdBy": "system",
-                "createdTime": "2018-12-13 16:45:53",
-                "lastModifiedBy": "02",
-                "lastModifiedTime": "2020-01-15 11:22:11",
-                "coinPairsNumber": 10031000,
-                "coinCode": "ETH",
-                "priceCoinCode": "USDT",
-                "buyFeeRate": 0.1,
-                "sellFeeRate": 0.2,
-                "maxIncrease": 50,
-                "maxDecline": 50,
-                "minOrderLimit": 0.01,
-                "maxOrderLimit": 100,
-                "pairsPricePrecision": 6,
-                "pairsVolumePrecision": 5,
-                "marketBuyMin": 0.01,
-                "marketBuyMax": 100,
-                "marketSellMin": 0.01,
-                "marketSellMax": 100,
-                "marketMatchDepth": 5,
-                "closeEnable": false,
-                "tradeStatus": true,
-                "yesterdayClosePrice": 89.03,
-                "checkStatus": true,
-                "commission": null,
-                "openPrice": 89.03,
-                "sort": null,
-                "defaultCoinPairs": null,
-                "unionPairsTradeStatus": true,
-                "marketRegion": "INNOVATE_MARKET"
-            }
-        ],
-        "regionSymbols": null
-    }
-]
-```
-
-- 返回<font color="#F70000">**数组**</font>元素说明
-
-| 字段                 | 类型    | 说明             |
-| -------------------- | ------- | ---------------- |
-| coinCode         | String  | 市场         |
-| coinParisStr         | String  | 市场所开交易对字符串 |
-| coinPairs            | Array |                  |
-| coinPairs[0].coinCode | String | 交易币 |
-| coinPairs[0].priceCoinCode     | String | 定份币 |
-| coinPairs[0].buyFeeRate        | number  | 买方手续费率 |
-| coinPairs[0].sellFeeRate       | number  | 卖方手续费率 |
-| coinPairs[0].maxIncrease       | number  | 限价单笔最大涨幅 |
-| coinPairs[0].maxDecline        | number  | 限价单笔最大跌幅 |
-| coinPairs[0].minOrderLimit     | number  | 单笔最小下单量 |
-| coinPairs[0].maxOrderLimit     | number  | 单笔最大下单量 |
-| coinPairs[0].pairsPricePrecision | number  | 交易对价格小数位 |
-| coinPairs[0].pairsVolumePrecision | number  | 交易对数量小数位 |
-| coinPairs[0].marketBuyMin      | number  | 市价最小买入量   |
-| coinPairs[0].marketBuyMax      | number  | 市价最大买入量   |
-| coinPairs[0].marketSellMin     | number  | 市价最小卖出量   |
-| coinPairs[0].marketSellMax     | number  | 市价最大卖出量   |
-| coinPairs[0].tradeStatus       | boolean | 交易状态         |
-| coinPairs[0].openPrice         | number  | 开盘价           |
-| coinPairs[0].marketRegion      | String  | 市场分区         |
-
-
-### <span id="asset">查询资产</span>
-
-- 地址
-
-```http
-POST /api/asset/user/customer_asset_info/additional
-
-Content-Type: application/x-www-form-urlencoded; charset=utf-8
-```
-
-- 请求参数
-
-| 字段            | 类型   | 说明     | 备注                 |
-| --------------- | ------ | -------- | -------------------- |
-| page   | Number | 委托价格 | 非必填，从0开始           |
-| size   | Number | 委托数量 | 非必填，默认10         |
-
-- 响应
-
-```json
-{
-    "content": [
-        {
-            "id": "EFW13E11QZX6XTGCVSW0",
-            "customerId": "01001000035k4",
-            "realName": null,
-            "coinCode": "ETH",
-            "coinIcon": null,
-            "availableAmount": 134.7534,
-            "frozenAmount": 0,
-            "lockedAmount": 0,
-            "totalAmount": 134.7534,
-            "status": false,
-            "publicKey": null,
-            "version": 38,
-            "createdBy": "system",
-            "createdTime": null,
-            "lastModifiedBy": "system",
-            "lastModifiedTime": null,
-            "accountInfoId": null,
-            "memo": null,
-            "remark": null,
-            "availableAmountStr": "134.7534",
-            "frozenAmountStr": "0",
-            "lockedAmountStr": "0"
-        },
-        {
-            "id": "751ce40c22fe11ea93bb00163e00a5d4",
-            "customerId": "01001000035k4",
-            "realName": null,
-            "coinCode": "USDT",
-            "coinIcon": null,
-            "availableAmount": 9999887693.2431638,
-            "frozenAmount": 4692,
-            "lockedAmount": 0,
-            "totalAmount": 9999892385.2431638,
-            "status": false,
-            "publicKey": null,
-            "version": 66,
-            "createdBy": "system",
-            "createdTime": null,
-            "lastModifiedBy": "01001000035k4",
-            "lastModifiedTime": null,
-            "accountInfoId": null,
-            "memo": null,
-            "remark": null,
-            "availableAmountStr": "9999887693.2431638",
-            "frozenAmountStr": "4692",
-            "lockedAmountStr": "0"
-        }
-    ],
-    "numberOfElements": 2,
-    "size": 2,
-    "number": 0
-}
-
-```
-
-- 返回对象说明
-
-| 字段              | 类型   | 说明                   |
-| ----------------- | ------ | ---------------------- |
-| size | int | 每页大小 |
-| number | int | 当前返回的页数,从0开始 |
-| numberOfElements | int | content的元素个数 |
-| content | Array |  |
-| content[0].coinCode | String | 币种             |
-| content[0].availableAmount | Number   | 可用资金 |
-| content[0].frozenAmount | Number   | 冻结资金 |
-| content[0].lockedAmount | Number   | 锁定资金 |
-| content[0].totalAmount | Number   | 总资产 |
-
-
-## 交易接口
-
-### <span id="fix">限价委托</span>
-
-- 地址
-
-```http
-POST /api/engine/entrust/fix
-
-Content-Type: application/x-www-form-urlencoded; charset=utf-8
-```
-
-- 请求参数
-
-| 字段            | 类型   | 说明                   | 备注                 |
-| --------------- | ------ | ---------------------- | -------------------- |
-| coin_code       | String | 交易币                 | 必填                 |
-| price_coin_code | String | 定价币                 | 必填                 |
-| entrust_price   | Number | 委托价格               | 必填                 |
-| entrust_count   | Number | 委托数量               | 必填                 |
-| direction       | String | 交易方向(`BUY`或`SELL`) |必填 |
-| trade_password  | String | 资金密码               | 非必填，配合交易策略 |
-
-- 响应
-
-```json
-{ 
-    "entrustNumber": "139669789713891328", 
-    "entrustMillisTime": 1579571872807 
-}
-```
-
-- 返回对象说明
-
-| 字段              | 类型   | 说明                   |
-| ----------------- | ------ | ---------------------- |
-| entrustNumber     | String | 委托单号               |
-| entrustMillisTime | long   | 下委托时间，精确到毫秒 |
-
-- 错误码
-
-| message                        | 解释                           |
-| ------------------------------ | ------------------------------ |
-| entrust_price_illegal          | 委托价格不能为空且必须大于0    |
-| entrust_price_scala_too_large  | 委托价格小数位太多             |
-| entrust_count_illegal          | 委托数量不能为空且必须大于0    |
-| entrust_amount_scala_too_large | 委托数量小数位太多             |
-| entrust_exchange_trade_close   | 交易所关闭交易/联盟关闭交易    |
-| entrust_price_scala_mismatch   | 委托价格小数位与后台配置不匹配 |
-| entrust_amount_scala_mismatch  | 委托数量小数位与后台配置不匹配 |
-| entrust_amount_gt_max_allow    | 委托下单量大于最大交易量       |
-| entrust_amount_lt_min_allow    | 委托下单量小于最小交易量       |
-| entrust_trade_deny             | 用户被禁止交易                 |
-| entrust_fund_password_error    | 用户资金密码错误               |
-| INVALID_PRICE_RANGE            | 价格超出上限或下限             |
-| NOT_ACCEPTED                   | 撮合关闭                       |
-| fund_not_enough                | 资金不足                       |
-
-
-
-### <span id="revocation">撤销委托</span>
-
-- 地址
-
-```http
-PUT /api/engine/entrust/cancel/v1
-
-Content-Type: application/x-www-form-urlencoded; charset=utf-8
-```
-
-- 请求参数
-
-
-| 字段            | 类型   | 说明     | 备注 |
-| --------------- | ------ | -------- | ---- |
-| entrust_numbers | String | 委托单号 | 必填 |
-
-
-- 响应
-```json
-{
-    "entrustNum": "139669789713891328",
-    "message": "ACCEPTED"
-}
-```
-
-- 返回对象说明
-
-| 字段       | 类型   | 说明        |
-| ---------- | ------ | ----------- |
-| entrustNum | String | 委托单号    |
-| message    | String | 错误/成功码 |
-
-- resultCode解释
-
-| message  | 解释                       |
-| -------- | -------------------------- |
-| ACCEPTED | 接受了撤销请求             |
-| CANCELED | 委托已经撤销               |
-| FILLED   | 委托已经成交               |
-| FAIL     | 委托之前已经标记为撤销失败 |
-
-- 错误码
-
-| message                      | 解释           |
-| ---------------------------- | -------------- |
-| entrust_trade_deny           | 用户被禁止交易 |
-| entrust_exchange_trade_close | 交易所关闭交易 |
-
-
-
-### <span id="revocation_batch">批量撤销委托</span>
-
-- 地址
-
-```http
-POST /api/engine/entrust/cancel/batch/v1
-
-Content-Type: application/x-www-form-urlencoded; charset=utf-8
-```
-
-- 请求参数
-
-| 字段            | 类型   | 说明     | 备注                       |
-| --------------- | ------ | -------- | -------------------------- |
-| entrust_numbers | String | 委托单号 | 必填，多个单号使用逗号分隔 |
-
-- 响应
-
-```json
-[
-    {
-        "entrustNum": "139669789713891328",
-        "message": "CANCELED"
-    }
-]
-
-```
-
-- 返回对象说明
-
-| 字段       | 类型   | 说明        |
-| ---------- | ------ | ----------- |
-| entrustNum | String | 委托单号    |
-| message    | String | 错误/成功码 |
-
-- message说明
-
-| message  | 解释                       |
-| -------- | -------------------------- |
-| ACCEPTED | 撮合接受了撤销请求         |
-| CANCELED | 委托已经撤销               |
-| FILLED   | 委托已经成交               |
-| FAIL     | 委托之前已经标记为撤销失败 |
-|          |                            |
-
-- 错误码
-
-| message                      | 解释           |
-| ---------------------------- | -------------- |
-| entrust_trade_deny           | 用户被禁止交易 |
-| entrust_exchange_trade_close | 交易所关闭交易 |
-
-
-
-
-### <span id="current">查询当前委托</span>
-
--  地址
-
-```http
-POST /api/entrust/current/top
-
-Content-Type: application/x-www-form-urlencoded; charset=utf-8
-```
-
-
-- 请求参数
-
-
-| 字段            | 类型   | 说明     | 备注    |
-| --------------- | ------ | -------- | ------- |
-| top             | int    | 请求行数 | 最大500 |
-| coin_code       | String | 交易币   |         |
-| price_coin_code | String | 定价币   |         |
-
-
-- 响应
-
-```json
-[
-    {
-        "id": "FAQB52E1XRZOBLVB0XDS",
-        "surplusCount": 11.0,
-        "transactionCount": 0e-10,
-        "canceledAmount": 0e-10,
-        "no": "139672783490678784",
-        "coinCode": "ETH",
-        "priceCoinCode": "USDT",
-        "way": "FIXED",
-        "direction": "SELL",
-        "price": 120.0,
-        "count": 11.0,
-        "millisTime": 1579572586579,
-        "status": "SUBMITTED"
-    },
-    {
-        "id": "FAQAJ501XRZOBLVB0XDS",
-        "surplusCount": 11.0,
-        "transactionCount": 0e-10,
-        "canceledAmount": 0e-10,
-        "no": "139672664322080768",
-        "coinCode": "ETH",
-        "priceCoinCode": "USDT",
-        "way": "FIXED",
-        "direction": "BUY",
-        "price": 110.0,
-        "count": 11.0,
-        "millisTime": 1579572558167,
-        "status": "SUBMITTED"
-    }
-]
-
-```
-
-- 返回<font color="#F70000">**数组**</font>元素说明
-
-| 字段             | 类型   | 说明                             |
-| ---------------- | ------ | -------------------------------- |
-| no               | String | 委托单号                         |
-| coinCode         | String | 交易币                           |
-| priceCoinCode    | String | 定价币                           |
-| way              | String | 下单类型（限价，市价，止盈止损） |
-| direction        | String | 买卖方向， 0：买，1：卖          |
-| price            | Number | 委托价格                         |
-| count            | Number | 委托数量                         |
-| millisTime       | long   | 下委托时间，精确到毫秒           |
-| surplusCount     | Number | 剩余委托数量                     |
-| transactionCount | Number | 成交量                           |
-| canceledAmount   | Number | 撤销量                           |
-| status           | String | 状态                             |
-
-- 状态说明
-
-| 状态             | 说明             |
-| ---------------- | ---------------- |
-| SUBMITTED        | 未成交           |
-| PARTIAL_FILLED   | 部分成交         |
-| PARTIAL_CANCELED | 部分成交部分撤销 |
-| FILLED           | 完全成交         |
-| CANCELED         | 已撤销           |
-
-
-
-
-### <span id="history">查询历史委托</span>
-
-- 地址
-
-```http
-POST /api/entrust/exchange/slice/history/user
-
-Content-Type: application/x-www-form-urlencoded; charset=utf-8
-```
-
-
-- 请求参数
-
-| 字段            | 类型    | 说明           | 备注                        |
-| --------------- | ------- | -------------- | --------------------------- |
-| page            | int     | 请求页         | 非必填，从0开始             |
-| size            | int     | 每页大小       | 非必填，默认10              |
-| coin_code       | String  | 交易币         | 非必填                      |
-| price_coin_code | String  | 定价币         | 非必填                      |
-| direction       | String  | 买卖方向       | 非必填                      |
-| begin_time      | Date    |                | 非必填，yyyy-MM-dd HH:mm:ss |
-| end_time        | Date    |                | 非必填，yyyy-MM-dd HH:mm:ss |
-| filter_canceled | boolean | 是否过滤撤销的 | 非必填，默认false           |
-
-- 响应
-
-```json
-{
-    "content": [
-        {
-            "coinCode": "ETH",
-            "direction": "BUY",
-            "entrustCount": 11.0,
-            "entrustNumber": "139669789713891328",
-            "entrustPrice": 110.0,
-            "entrustSum": 1210.0,
-            "entrustTime": "2020-01-21 09:57:52",
-            "entrustWay": "FIXED",
-            "priceCoinCode": "USDT",
-            "processedPrice": 0,
-            "status": "CANCELED",
-            "surplusEntrustAmount": 0e-10,
-            "transactionSum": 0e-10,
-            "turnover": 0e-10
-        }
-    ],
-    "numberOfElements": 1,
-    "size": 10,
-    "number": 0
-}
-
-```
-
-- 返回对象说明
-
-| 字段                      | 类型   | 说明              |
-| ------------------------- | ------ | ----------------- |
-| size                      | int    | 每页记录数        |
-| number                    | int    | 当前页数，从0开始 |
-| numberOfElements          | int    | content元素个数   |
-| content[]                 | Array  |                   |
-| content[0].entrustNumber  | String | 委托单号          |
-| content[0].coinCode       | String | 交易币            |
-| content[0].priceCoinCode  | String | 定价币            |
-| content[0].direction      | String | 买卖方向          |
-| content[0].entrustPrice   | Number | 委托价            |
-| content[0].entrustCount   | Number | 委托数量          |
-| content[0].entrustTime    | Date   | 委托时间          |
-| content[0].entrustWay     | String | 委托类型          |
-| content[0].turnover       | Number | 成交数量数量      |
-| content[0].processedPrice | Number | 成交均价          |
-| content[0].status         | String | 委托单状态        |
-
-  
-
-### <span id="entrust_info">根据委托单号查询委托</span>
-
-- 地址
-
-```http
-GET /api/entrust/info
-```
-
-- 请求参数
-
-| 字段           | 类型   | 说明     | 备注 |
-| -------------- | ------ | -------- | ---- |
-| entrust_number | String | 委托单号 | 必填 |
-
-- 响应
-
-```json
-{
-    "id": "FAQB52E1XRZOBLVB0XDS",
-    "surplusCount": 11.0,
-    "transactionCount": 0e-10,
-    "canceledAmount": 0e-10,
-    "no": "139672783490678784",
-    "coinCode": "ETH",
-    "priceCoinCode": "USDT",
-    "customerId": "01001000035k4",
-    "way": "FIXED",
-    "direction": "SELL",
-    "price": 120.0,
-    "count": 11.0,
-    "transactionSum": 0e-10,
-    "triggerPrice": null,
-    "millisTime": 1579572586579,
-    "processedPrice": 0,
-    "entrustTime": "2020-01-21 10:09:46",
-    "status": "SUBMITTED"
-}
-
-```
-
-- 返回对象说明
-
-| 字段                | 类型   | 说明         |
-| --------------        | ------ | ------------ |
-| surplusCount          | Number | 剩余数量         |
-| transactionCount      | Number | 成交数量         |
-| canceledAmount        | Number | 撤销数量     |
-| direction             | String | 买卖方向         |
-| coinCode              | String | 交易币          | 
-| priceCoinCode         | String | 定价币      |
-| customerId            | String | 用户ID         |
-| way                   | String | 委托类型         |
-| price                 | Number | 委托价格         |
-| count                 | Number | 委托数量         |
-| transactionSum        | Number | 成交总额     |
-| triggerPrice          | Number | 触发价          |
-| millisTime            | long   | 下单时间戳，毫秒   |
-| processedPrice        | Number | 成交均价     |
-| entrustTime           | Date   | 下单时间     |
-| status                | String | 委托单状态    |
-
-  
-
-### <span id="order_info">根据委托单号查询成交单</span>
-
-- 地址
-
-```http
-GET /api/entrust/order/info
-```
-
-- 请求参数
-
-| 字段           | 类型   | 说明     | 备注   |
-| -------------- | ------ | -------- | ------ |
-| entrust_number | String | 委托单号 | 必填， |
-
-- 响应
-
-```json
-[
-    {
-        "id": 139675491006054401,
-        "orderNumber": "139675489479213056",
-        "coinCode": "ETH",
-        "priceCoinCode": "USDT",
-        "entrustWay": "FIXED",
-        "entrustPrice": 110.0,
-        "transactionPrice": 110.0,
-        "transactionCount": 1.0,
-        "transactionTimeStamp": 1579573231736,
-        "transactionSum": 110.0,
-        "transactionFee": 0.22,
-        "transactionFeeRate": 0.002,
-        "triggerPrice": null,
-        "entrustNumber": "139675489282326528",
-        "custId": "01001000035k4",
-        "direction": "SELL",
-        "entrustCategory": "user",
-        "transactionTime": "2020-01-21 10:20:31"
-    }
-]
-
-```
-
-- 返回对象说明
-
-| 字段               | 类型   | 说明     |
-| ------------------ | ------ | -------- |
-| custId             | String | 用户ID   |
-| entrustNum         | String | 委托单号 |
-| orderNumber        | String | 成交单号 |
-| coinCode           | String | 交易币   |
-| priceCoinCode      | String | 定价币   |
-| direction          | String | 买卖方向 |
-| entrustPrice       | Number | 委托价   |
-| transactionPrice   | Number | 成交价   |
-| transactionCount   | Number | 成交量   |
-| transactionFee     | Number | 手续费   |
-| transactionFeeRate | Number | 手续费率 |
-| transactionSum     | Number | 成交量   |
-
-  
-
-## <span id="was">行情</span>
-
-
-
-### <span id="market_depth">买卖盘行情</span>
-
-- 地址
-
-```http
-GET /api/connect/public/market/depth/{symbol}
+GET /api/futures/query_orders_pro
 ```
 
 - 请求参数
 
 | 字段   | 类型   | 说明         | 备注                         |
 | ------ | ------ | ------------ | ---------------------------- |
-| symbol | String | 请求的交易对 | 必填，eth_usdt，大小定不敏感 |
-
-- 响应
-
-```json
-{
-    "asks": [
-        {
-            "amount": "11.0000000000",
-            "price": "120.0000000000",
-            "time": 1579573622553,
-            "volume": "11.0000000000"
-        }
-    ],
-    "bids": [
-        {
-            "amount": "11.0000000000",
-            "price": "110.0000000000",
-            "time": 1579573622553,
-            "volume": "11.0000000000"
-        }
-    ],
-    "last_strike_price": "110.0000000000",
-    "timestamp": 1579573622833
-}
-
-
-```
-
-- 返回对象说明
-
-| 字段               | 类型   | 说明     |
-| ------------------ | ------ | -------- |
-| asks | Array | 按price降序 |
-| asks.price              | String | 价格档   |
-| asks.volume             | String | 档位的量 |
-| bids | Array | 按price降序 |
-| bids.price              | String | 价格档   |
-| bids.volume             | String | 档位的量 |
-| last_strike_price | String | 最新成交价 |
-| timestamp | long | 时间戳，精确到毫秒 |
-
- 
-
-### <span id="market_trade">交易记录行情</span>
-
-- 地址
-
-```http
-GET /api/connect/public/market/trade/{symbol}
-```
-
-- 请求参数
-
-| 字段   | 类型   | 说明         | 备注                         |
-| ------ | ------ | ------------ | ---------------------------- |
-| symbol | String | 请求的交易对 | 必填，eth_usdt，大小定不敏感 |
-| size   | int    | 请求的长度   | 非必填，默认30               |
+| timestamp | Long | 时间戳 | 选填 |
 
 - 响应
 
 ```json
 [
     {
-        "id": "139675489479213056",
-        "price": "110.0000000000",
-        "symbol": "eth_usdt",
-        "time": 1579573231736,
-        "type": "ASK",
-        "volume": "1.0000000000"
-    },
-    {
-        "id": "135800181625688064",
-        "price": "151.0000000000",
-        "symbol": "eth_usdt",
-        "time": 1578649286344,
-        "type": "ASK",
-        "volume": "0.4000000000"
+      "avgPx": 0,
+      "created": "2020-09-02T06:52:05.587Z",
+      "cumQty": 0,
+      "currency": "string",
+      "fee": 0,
+      "iceberg": true,
+      "id": "string",
+      "modified": "2020-09-02T06:52:05.587Z",
+      "openPosition": true,
+      "ordStatus": "NEW",
+      "pnl": 0,
+      "price": 0,
+      "qty": 0,
+      "showQty": 0,
+      "side": "Buy",
+      "source": "Normal",
+      "stopLossPrice": 0,
+      "stopWinPrice": 0,
+      "stopWinType": "Limit",
+      "symbol": "string",
+      "tif": "DAY",
+      "trailingStop": 0,
+      "triggerPrice": 0,
+      "triggerType": "LAST",
+      "type": "Limit",
+      "uid": "string"
     }
 ]
 
@@ -927,129 +165,1297 @@ GET /api/connect/public/market/trade/{symbol}
 
 | 字段   | 类型   | 说明              |
 | ------ | ------ | ----------------- |
-| id     | String |                   |
-| price  | String | 成交价            |
-| symbol | String | 交易对            |
-| time   | long   | 成交时间戳        |
-| type   | String | 成交类型（买\卖） |
-| volume | String | 成交量            |
+| id  | String  | 订单id，eg: O101-20190910-033720-922-1879  |
+| currency  | String  | 交易币种  |
+| symbol  | String  | 合约名称  |
+| created  | Date  | 订单创建时间  |
+| modified  | Date  | 订单发生变动时间  |
+| side  | String  | 订单方向，Buy/Sell  |
+| type  | String  | 订单类型，Limit/Market  |
+| price  | Double  | 订单价格  |
+| qty  | Double  | 订单数量  |
+| openPosition  | Boolean  | 开仓/平仓单，开仓为 true，平仓为false  |
+| cumQty  | Double  | 已成交数量  |
+| avgPx  | Double  | 成交均价  |
+| ordStatus  | String  | 订单状态，NEW - 新单；PARTIALLY_FILLED - 部分成交；FILLED - 全部成交；CANCELED - 已撤；REJECTED - 已拒；WAITING - 等待（条件单）  |
+| iceberg  | Boolean  | 是否为冰山单  |
+| showQty  | Double  | 冰山单显示数量  |
+| source  | String  | 订单来源，Normal - 正常下单；Conditional - 条件单；StopWin - 止盈单；StopLoss - 止损单；TrailingStop - 追踪止损单；SysRisk - 爆仓单  |
+| stopLossPrice  | Double  | 止损价  |
+| stopWinPrice  | Double  | 止盈价  |
+| stopWinType  | Double  | 止盈类型，Limit/Market  |
+| trailingStop  | Double  | 追踪止损  |
+| triggerPrice  | Double  | 条件单触发价  |
+| triggerType  | String  | 条件单触发价类型，LAST - 最后成交价，INDEX - 标记价  |
 
- 
-
-##  WebSocket行情
 
 
+### <span id="query_order_by_id">查询当前用户的某个合约订单</span>
 
-### <span id="depth">买卖盘行情</span>
+- 地址
 
-- 订阅参数：
+```http
+GET /api/futures/query_order_by_id
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明         | 备注                         |
+| ------ | ------ | ------------ | ---------------------------- |
+| order_no | String | 订单号 | 必填 |
+
+- 响应
 
 ```json
-  {
-    "channel": "depth_all",
-    "symbol": "btcusdt"//只支持一个交易对
+{
+    "avgPx": 0,
+    "created": "2020-09-02T07:17:58.928Z",
+    "cumQty": 0,
+    "currency": "string",
+    "fee": 0,
+    "iceberg": true,
+    "id": "string",
+    "modified": "2020-09-02T07:17:58.928Z",
+    "openPosition": true,
+    "ordStatus": "NEW",
+    "pnl": 0,
+    "price": 0,
+    "qty": 0,
+    "showQty": 0,
+    "side": "Buy",
+    "source": "Normal",
+    "stopLossPrice": 0,
+    "stopWinPrice": 0,
+    "stopWinType": "Limit",
+    "symbol": "string",
+    "tif": "DAY",
+    "trailingStop": 0,
+    "triggerPrice": 0,
+    "triggerType": "LAST",
+    "type": "Limit",
+    "uid": "string"
+}
+
+```
+
+- 返回<font color="#F70000">**对象**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| id  | String  | 订单id，eg: O101-20190910-033720-922-1879  |
+| currency  | String  | 交易币种  |
+| symbol  | String  | 合约名称  |
+| created  | Date  | 订单创建时间  |
+| modified  | Date  | 订单发生变动时间  |
+| side  | String  | 订单方向，Buy/Sell  |
+| type  | String  | 订单类型，Limit/Market  |
+| price  | Double  | 订单价格  |
+| qty  | Double  | 订单数量  |
+| openPosition  | Boolean  | 开仓/平仓单，开仓为 true，平仓为false  |
+| cumQty  | Double  | 已成交数量  |
+| avgPx  | Double  | 成交均价  |
+| ordStatus  | String  | 订单状态，NEW - 新单；PARTIALLY_FILLED - 部分成交；FILLED - 全部成交；CANCELED - 已撤；REJECTED - 已拒；WAITING - 等待（条件单）  |
+| iceberg  | Boolean  | 是否为冰山单  |
+| showQty  | Double  | 冰山单显示数量  |
+| source  | String  | 订单来源，Normal - 正常下单；Conditional - 条件单；StopWin - 止盈单；StopLoss - 止损单；TrailingStop - 追踪止损单；SysRisk - 爆仓单  |
+| stopLossPrice  | Double  | 止损价  |
+| stopWinPrice  | Double  | 止盈价  |
+| stopWinType  | Double  | 止盈类型，Limit/Market  |
+| trailingStop  | Double  | 追踪止损  |
+| triggerPrice  | Double  | 条件单触发价  |
+| triggerType  | String  | 条件单触发价类型，LAST - 最后成交价，INDEX - 标记价  |
+
+
+
+### <span id="query_accounts">查询当前用户的所有合约资产</span>
+
+- 地址
+
+```http
+GET /api/futures/query_accounts
+```
+
+- 请求参数
+  无
+
+- 响应
+
+```json
+[
+    {
+      "cash": 0,
+      "cashAvailable": 0,
+      "currency": "string",
+      "factLeverage": 0,
+      "frozenCash": 0,
+      "uid": "string",
+      "urPnl": 0,
+      "withdrawableCash": 0
+    }
+]
+
+```
+
+- 返回<font color="#F70000">**数组**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| currency  | String  | 币种  |
+| cash  | Double  | 总资金  |
+| withdrawableCash  | Double  | 可提资金  |
+| frozenCash  | Double  | 冻结资金  |
+| urPnl  | Double  | 账户浮动盈亏   |
+
+
+
+### <span id="query_position">查询当前用户的合约仓位</span>
+
+- 地址
+
+```http
+GET /api/futures/query_position
+```
+
+- 请求参数
+  无
+
+- 响应
+
+```json
+[
+    {
+      "closableQty": 0,
+      "created": "2020-09-02T07:26:54.675Z",
+      "currency": "string",
+      "deposit": 0,
+      "individualPosition": true,
+      "lastPrice": 0,
+      "liquidationPrice": 0,
+      "pnl": 0,
+      "pnlRate": 0,
+      "positionLeverage": 0,
+      "price": 0,
+      "qty": 0,
+      "side": "Long",
+      "stopLossPrice": 0,
+      "stopWinPrice": 0,
+      "stopWinType": "Limit",
+      "symbol": "string",
+      "trailingStop": 0,
+      "trailingStopPrice": 0,
+      "uid": "string",
+      "urPnL": 0,
+      "value": 0
+    }
+  ]
+
+```
+
+- 返回<font color="#F70000">**数组**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| currency  | String  | 交易币种  |
+| symbol  | String  | 合约名称  |
+| side  | String  | 持仓方向，Long - 多仓，Short - 空仓  |
+| qty  | Double  | 持仓数量  |
+| individualPosition  | Boolean  | 是否逐仓，true - 逐仓，false - 全仓  |
+| price  | Double  | 持仓价格  |
+| closableQty  | Double  | 可平数量  |
+| pnlRate  | Double  | 浮动盈亏比例  |
+| value  | Double  | 持仓价值  |
+| positionLeverage  | Double  | 杠杆  |
+| stopLossPrice  | Double  | 止损价设定  |
+| stopWinPrice  | Double  | 止盈价设定  |
+| stopWinType  | String  | 止盈类型，Limit/Market  |
+| trailingStop  | Double  | 追踪止损价距  |
+| trailingStopPrice  | Double  | 根据追踪止损算出的止损价  |
+| pnl  | Double  | 已实现盈亏  |
+| urPnL  | Double  | 浮动盈亏  |
+| liquidationPrice  | Double  | 爆仓价  |
+| deposit  | Double  | 保证金  |
+
+
+
+### <span id="query_active_orders">查询当前用户未完成的合约订单</span>
+
+- 地址
+
+```http
+GET /api/futures/query_active_orders
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明         | 备注                         |
+| ------ | ------ | ------------ | ---------------------------- |
+| symbol | String | 合约名字，BTCUSD, BCHUSD... | 选填 |
+
+- 响应
+
+```json
+[
+    {
+      "avgPx": 0,
+      "created": "2020-09-02T07:49:51.338Z",
+      "cumQty": 0,
+      "currency": "string",
+      "fee": 0,
+      "iceberg": true,
+      "id": "string",
+      "modified": "2020-09-02T07:49:51.338Z",
+      "openPosition": true,
+      "ordStatus": "NEW",
+      "pnl": 0,
+      "price": 0,
+      "qty": 0,
+      "showQty": 0,
+      "side": "Buy",
+      "source": "Normal",
+      "stopLossPrice": 0,
+      "stopWinPrice": 0,
+      "stopWinType": "Limit",
+      "symbol": "string",
+      "tif": "DAY",
+      "trailingStop": 0,
+      "triggerPrice": 0,
+      "triggerType": "LAST",
+      "type": "Limit",
+      "uid": "string"
+    }
+]
+
+```
+
+- 返回<font color="#F70000">**数组**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| id  | String  | 订单id，eg: O101-20190910-033720-922-1879  |
+| currency  | String  | 交易币种  |
+| symbol  | String  | 合约名称  |
+| created  | Date  | 订单创建时间  |
+| modified  | Date  | 订单发生变动时间  |
+| side  | String  | 订单方向，Buy/Sell  |
+| type  | String  | 订单类型，Limit/Market  |
+| price  | Double  | 订单价格  |
+| qty  | Double  | 订单数量  |
+| openPosition  | Boolean  | 开仓/平仓单，开仓为 true，平仓为false  |
+| cumQty  | Double  | 已成交数量  |
+| avgPx  | Double  | 成交均价  |
+| ordStatus  | String  | 订单状态，NEW - 新单；PARTIALLY_FILLED - 部分成交；FILLED - 全部成交；CANCELED - 已撤；REJECTED - 已拒；WAITING - 等待（条件单）  |
+| iceberg  | Boolean  | 是否为冰山单  |
+| showQty  | Double  | 冰山单显示数量  |
+| source  | String  | 订单来源，Normal - 正常下单；Conditional - 条件单；StopWin - 止盈单；StopLoss - 止损单；TrailingStop - 追踪止损单；SysRisk - 爆仓单  |
+| stopLossPrice  | Double  | 止损价  |
+| stopWinPrice  | Double  | 止盈价  |
+| stopWinType  | Double  | 止盈类型，Limit/Market  |
+| trailingStop  | Double  | 追踪止损  |
+| triggerPrice  | Double  | 条件单触发价  |
+| triggerType  | String  | 条件单触发价类型，LAST - 最后成交价，INDEX - 标记价  |
+
+
+
+### <span id="enter_order">当前用户合约开平仓</span>
+
+- 地址
+
+```http
+POST /api/futures/enter_order
+
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明         | 备注                         |
+| ------ | ------ | ------------ | ---------------------------- |
+| coin_code | String | 结算币种 | 必填 |
+| symbol | String | 合约名字，BTCUSD, BCHUSD... | 必填 |
+| open_position | String | 开仓true, 平仓false | 必填 |
+| quantity | Double | 数量 | 必填 |
+| price | Double | 价格 | 必填 |
+| trade_direction | String | 方向，买卖BUY SELL | 必填 |
+| order_type | String | 订单类型，限价LIMIT、市价MARKET | 必填 |
+| stop_loss_price | String | 不能和追踪止损（trailingStop）同时设置 | 选填 |
+| trailing_stop | Double | 追踪止损，不能和止损价格（stopLossPrice）同时设置 | 选填 |
+| stop_win_price | Double | 止盈价格 | 选填 |
+| stop_win_type | String | 限价 LIMIT，市价 MARKET | 选填 |
+| trigger_price | Double | 条件触发价 | 选填 |
+| trigger_type | String | LAST 为最后成交价触发，INDEX 为标记价触发 | 选填 |
+| tif_type | String | GOOD_TILL_CANCEL: 一直有效至消失；IMMEDIATE_OR_CANCEL: 立即成交或取消；FILL_OR_KILL:完全成交或取消；QUEUE_OR_CANCEL: 被动委托 | 选填 |
+
+- 响应
+
+```json
+{
+	"status": 0,
+	"result": "O101-20190910-033720-922-1879"
+}
+
+```
+
+- 返回<font color="#F70000">**对象**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| status  | Integer  | 状态，执行成功0，执行失败-1  |
+| result  | String  | 订单号  |
+| message  | String  | status -1 时返回错误消息  |
+
+
+
+### <span id="cancel_order">取消当前用户的合约订单</span>
+
+- 地址
+
+```http
+POST /api/futures/cancel_order
+
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明         | 备注                         |
+| ------ | ------ | ------------ | ---------------------------- |
+| order_no | String | 订单号 | 必填 |
+
+- 响应
+
+```json
+{
+	"status": 0,
+	"result": null
+}
+
+```
+
+- 返回<font color="#F70000">**对象**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| status  | Integer  | 状态，执行成功0，执行失败-1  |
+| result  | String  | 无返回  |
+| message  | String  | status -1 时返回错误消息  |
+
+
+
+### <span id="cancel_order_batch">批量取消当前用户的合约订单</span>
+
+- 地址
+
+```http
+POST /api/futures/cancel_order_batch
+
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明         | 备注                         |
+| ------ | ------ | ------------ | ---------------------------- |
+| order_nos | String | 多个订单号，以逗号分隔 | 必填 |
+
+- 响应
+
+```json
+{
+	"status": 0,
+	"result": null
+}
+
+```
+
+- 返回<font color="#F70000">**对象**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| status  | Integer  | 状态，执行成功0，执行失败-1  |
+| result  | String  | 无返回  |
+| message  | String  | status -1 时返回错误消息  |
+
+
+
+### <span id="close_position">当前用户合约仓位全平</span>
+
+- 地址
+
+```http
+POST /api/futures/close_position
+
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明         | 备注                         |
+| ------ | ------ | ------------ | ---------------------------- |
+| coin_code | String | 结算币种 | 必填 |
+| symbol | String | 合约名字，BTCUSD, BCHUSD... | 必填 |
+| position_type | String | 多仓 Long，空仓 Short | 必填 |
+
+- 响应
+
+```json
+{
+	"status": 0,
+	"result": null
+}
+
+```
+
+- 返回<font color="#F70000">**对象**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| status  | Integer  | 状态，执行成功0，执行失败-1  |
+| result  | String  | 无返回  |
+| message  | String  | status -1 时返回错误消息  |
+
+
+
+### <span id="switch_to_cross">当前用户切换为全仓模式</span>
+
+- 地址
+
+```http
+POST /api/futures/switch_to_cross
+
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明         | 备注                         |
+| ------ | ------ | ------------ | ---------------------------- |
+| coin_code | String | 结算币种 | 必填 |
+
+- 响应
+
+```json
+{
+	"status": 0,
+	"result": null
+}
+
+```
+
+- 返回<font color="#F70000">**对象**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| status  | Integer  | 状态，执行成功0，执行失败-1  |
+| result  | String  | 无返回  |
+| message  | String  | status -1 时返回错误消息  |
+
+
+
+### <span id="switch_position_side">当前用户切换单双向持仓模式</span>
+
+- 地址
+
+```http
+POST /api/futures/switch_position_side
+
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明         | 备注                         |
+| ------ | ------ | ------------ | ---------------------------- |
+| coin_code | String | 结算币种 | 必填 |
+| two_side_position | String | 双向持仓true, 单向持仓false | 必填 |
+
+- 响应
+
+```json
+{
+	"status": 0,
+	"result": null
+}
+
+```
+
+- 返回<font color="#F70000">**对象**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| status  | Integer  | 状态，执行成功0，执行失败-1  |
+| result  | String  | 无返回  |
+| message  | String  | status -1 时返回错误消息  |
+
+
+
+### <span id="change_position_leverage">切换当前用户合约的持仓杠杆</span>
+
+- 地址
+
+```http
+POST /api/futures/change_position_leverage
+
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明         | 备注                         |
+| ------ | ------ | ------------ | ---------------------------- |
+| coin_code | String | 结算币种 | 必填 |
+| symbol | String | 合约名字，BTCUSD, BCHUSD... | 必填 |
+| leverage | Integer | 杠杆倍数 | 必填 |
+
+- 响应
+
+```json
+{
+	"status": 0,
+	"result": null
+}
+
+```
+
+- 返回<font color="#F70000">**对象**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| status  | Integer  | 状态，执行成功0，执行失败-1  |
+| result  | String  | 无返回  |
+| message  | String  | status -1 时返回错误消息  |
+
+
+
+### <span id="risk_setting">修改当前用户的持仓</span>
+
+- 地址
+
+```http
+POST /api/futures/risk_setting
+
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明         | 备注                         |
+| ------ | ------ | ------------ | ---------------------------- |
+| coin_code | String | 结算币种 | 必填 |
+| symbol | String | 合约名字，BTCUSD, BCHUSD... | 必填 |
+| position_type | String | LONG为多仓，SHORT为空仓 | 必填 |
+| add_deposit | Double | 追加/减少保证金，只对逐仓模式 | 可选 |
+| stop_loss_price | Double | 止损价格 | 可选 |
+| trailing_stop | Double | 追踪止损，不能和止损价格（stopLossPrice）同时设置 | 可选 |
+| stop_win_price | Double | 止盈价格 | 可选 |
+| stop_win_type | String | LIMIT为限价止盈，MARKET为市价止盈 | 可选 |
+
+- 响应
+
+```json
+{
+	"status": 0,
+	"result": null
+}
+
+```
+
+- 返回<font color="#F70000">**对象**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| status  | Integer  | 状态，执行成功0，执行失败-1  |
+| result  | String  | 无返回  |
+| message  | String  | status -1 时返回错误消息  |
+
+
+
+### <span id="amend_order">修改当前用户的合约订单</span>
+
+- 地址
+
+```http
+POST /api/futures/amend_order
+
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明         | 备注                         |
+| ------ | ------ | ------------ | ---------------------------- |
+| order_no | String | 结算币种 | 必填 |
+| quantity | Double | 数量 | 可选 |
+| price | Double | 价格 | 可选 |
+| trigger_price | Double | 条件单触发价 | 可选 |
+| stop_loss_price | Double | 止损价格 | 可选 |
+| trailing_stop | Double | 追踪止损，不能和止损价格（stopLossPrice）同时设置 | 可选 |
+| stop_win_price | Double | 止盈价格 | 可选 |
+| stop_win_type | String | LIMIT为限价止盈，MARKET为市价止盈 | 可选 |
+
+- 响应
+
+```json
+{
+	"status": 0,
+	"result": null
+}
+
+```
+
+- 返回<font color="#F70000">**对象**</font>元素说明
+
+| 字段   | 类型   | 说明              |
+| ------ | ------ | ----------------- |
+| status  | Integer  | 状态，执行成功0，执行失败-1  |
+| result  | String  | 无返回  |
+| message  | String  | status -1 时返回错误消息  |
+
+
+
+## 行情 REST API
+
+### <span id="coin">获取币种</span>
+
+- 地址
+
+```http
+GET /api/futures/public/basic/refData
+```
+
+- 请求参数
+
+  （无）
+
+- 响应
+
+```json
+{
+    "code": 0,
+    "message": "OK",
+    "result": [
+        {
+            "symbol": "XBTCUSD",
+            "tick": 1.0,
+            "lotSize": 1.0,
+            "type": "PERP"
+        },
+        {
+            "symbol": "XETHUSD",
+            "tick": 0.05,
+            "lotSize": 1.0,
+            "type": "PERP"
+        },
+        {
+            "symbol": "XEOSUSD",
+            "tick": 0.001,
+            "lotSize": 1.0,
+            "type": "PERP"
+        },
+    ]
+}
+
+```
+
+
+
+### <span id="symbol">获取合约最新成交价</span>
+
+- 地址
+
+```http
+GET /api/futures/public/basic/lastPrice
+```
+
+- 请求参数
+
+  （无）
+
+- 响应
+
+```json
+{
+  "code": 0,
+  "message": "OK",
+  "result": {
+    "XBANDUSD": 13.825,
+    "XBCHUSD": 259.25,
+    "XETHUSD": 430.3,
+    "XLINKUSD": 14.37,
+    "XCOMPUSD": 223.1,
+    "XEOSUSD": 3.02,
+    "XLTCUSD": 56.93,
+    "XXTZUSD": 2.993,
+    "XDOTUSD": 6.015,
+    "XBTCUSD": 11332.0
   }
+}
+
 ```
 
-- 响应状态:
 
-```json
-ACCEPTED:{ "channel": "depth_all", "symbol": "btcusdt" }
+
+### 获取市场深度
+
+- 地址
+
+```http
+GET /api/futures/public/depth/depth
 ```
 
-- 返回对象说明
+- 请求参数
 
-| 字段              | 类型   | 说明 |
-| ----------------- | ------ | ---- |
-| data | Object |  |
-| data.asks          | Array | 按price降序排列 |
-| data.asks.amount     | String | 量；等于volume（兼容原接口） |
-| data.asks.price        | String | 价格 |
-| data.asks.volume       | String | 量 |
-| data.bids            | Array | 按price降序排列 |
-| data.bids.amount      | String | 量；等于volume（兼容原接口） |
-| data.bids.price        | String | 价格 |
-| data.bids.volume       | String | 量 |
-| data.last_strike_price | String | 最新成交价 |
-| dataType                  | String | 等于订阅参数的`channel` |
-| symbol                  | String | 等于订阅参数的`symbol` |
-| timestamp                  | long | 时间戳，精确到毫秒 |
+| 字段   | 类型   | 说明                  | 备注 |
+| ------ | ------ | --------------------- | ---- |
+| symbol | String | 合约名称，eg: XBTCUSD | 必填 |
 
-
-
-
-### <span id="trade">交易记录行情</span>
-
-- 订阅参数：
+- 响应
 
 ```json
 {
-    "channel": "trade_history",
-    "symbol": "btcusdt"//多个交易对使用英文逗号分隔
+  "code": 0,
+  "message": "OK",
+  "result": {
+    "buyDepth": [
+      {
+        "price": 11333.0,
+        "qty": 112772.0,
+        "count": 10,
+        "iceCount": 0
+      },
+      {
+        "price": 11332.0,
+        "qty": 89197.0,
+        "count": 7,
+        "iceCount": 0
+      },
+      {
+        "price": 11331.0,
+        "qty": 82113.0,
+        "count": 6,
+        "iceCount": 0
+      }
+    ],
+    "trades": null
+  }
 }
+
 ```
 
-- 响应状态:
+### 获取最新成交记录
 
-```json
-ACCEPTED:{ "channel": "trade_history", "symbol": "btcusdt", "bourse": "01001" }
+- 地址
+
+```http
+GET /api/futures/public/depth/trades
 ```
 
-- 返回对象说明
+- 请求参数
 
-| 字段   | 类型   | 说明 |
-| ------ | ------ | ---- |
-| data | Object |  |
-| data.curentExchangePrice  | String | 最新成交价 |
-| data.trades  | Array | 交易记录 |
-| data.trades.amount | String | 成交量;等于volume（兼容原接口） |
-| data.trades.id | String | 订单ID |
-| data.trades.price | String | 订单成交价 |
-| data.trades.symbol | String | 订单交易对 |
-| data.trades.time | long | 成交时间，精确到毫秒 |
-| data.trades.type | String | 成交类型（买\|卖） |
-| data.trades.volume | String | 成交量；等于amount |
-| dataType | String | 等于订阅参数的`channel` |
-| symbol | String | 等于订阅参数的`symbol` |
-| timestamp | long | 时间戳，精确到毫秒 |
+| 字段     | 类型   | 说明                                                         | 备注 |
+| -------- | ------ | ------------------------------------------------------------ | ---- |
+| symbol   | String | 合约名称，eg: XBTCUSD                                        | 必填 |
+| sequence | String | 上一次获取成交记录的最新一笔记录的 id；第一次请求传入空字符串 | 必填 |
 
+- 响应
 
-
-### <span id="statistics_24">24小时成交量</span>
-
-- 订阅参数
+  返回最近50笔成交。
 
 ```json
 {
-    "channel":"statistics_24",
-    "symbol":"HUB_USDT,BTC_USDT"//多个交易对使用英文逗号分隔
+  "code": 0,
+  "message": "OK",
+  "result": [
+    {
+      "id": "1599127941729000003",
+      "symbol": "XBTCUSD",
+      "price": 11335.0,
+      "qty": 23608.0,
+      "buyActive": false,
+      "timestamp": "2020-09-03T10:12:21.730+0000"
+    },
+    {
+      "id": "1599127940647000003",
+      "symbol": "XBTCUSD",
+      "price": 11335.0,
+      "qty": 5220.0,
+      "buyActive": true,
+      "timestamp": "2020-09-03T10:12:20.648+0000"
+    },
+    {
+      "id": "1599127938648000003",
+      "symbol": "XBTCUSD",
+      "price": 11336.0,
+      "qty": 14509.0,
+      "buyActive": false,
+      "timestamp": "2020-09-03T10:12:18.649+0000"
+    },
+    {
+      "id": "1599127933929000003",
+      "symbol": "XBTCUSD",
+      "price": 11337.0,
+      "qty": 10422.0,
+      "buyActive": true,
+      "timestamp": "2020-09-03T10:12:13.930+0000"
+    },
+    {
+      "id": "1599127931819000003",
+      "symbol": "XBTCUSD",
+      "price": 11335.0,
+      "qty": 1000.0,
+      "buyActive": false,
+      "timestamp": "2020-09-03T10:12:11.820+0000"
+    },
+    {
+      "id": "1599127930305000053",
+      "symbol": "XBTCUSD",
+      "price": 11336.0,
+      "qty": 500.0,
+      "buyActive": false,
+      "timestamp": "2020-09-03T10:12:10.309+0000"
+    }
+  ]
+}
+
+```
+
+### 获取最新一根 K 线数据
+
+- 地址
+
+```http
+GET /api/futures/public/kLine/latest
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明                  | 备注 |
+| ------ | ------ | --------------------- | ---- |
+| symbol | String | 合约名称，eg: XBTCUSD | 必填 |
+| type   | String | K线类型,eg: 5M 15M 1H | 必填 |
+
+- 响应
+
+```json
+{
+  "code": 0,
+  "message": "OK",
+  "result": {
+    "source": null,
+    "symbol": "XBTCUSD",
+    "open": 11331.0,
+    "close": 11336.0,
+    "high": 11337.0,
+    "low": 11330.0,
+    "keyTime": "2020-09-03T10:15:00.000+0000",
+    "timeStamp": "2020-09-03T10:16:21.973+0000",
+    "volume": 319767.0,
+    "turnover": 28.212856174373286
+  }
+}
+
+```
+
+### 获取资金费率
+
+- 地址
+
+```http
+GET /api/futures/public/kLine/fundingRate
+```
+
+- 请求参数
+
+| 字段    | 类型   | 说明                                              | 备注 |
+| ------- | ------ | ------------------------------------------------- | ---- |
+| symbols | String | 合约名称，多个合约以逗号分隔，eg: XBTCUSD,XETHUSD | 必填 |
+
+- 响应
+
+```json
+{
+  "code": 0,
+  "message": "OK",
+  "result": {
+    "source": null,
+    "symbol": "XBTCUSD",
+    "open": 11331.0,
+    "close": 11336.0,
+    "high": 11337.0,
+    "low": 11330.0,
+    "keyTime": "2020-09-03T10:15:00.000+0000",
+    "timeStamp": "2020-09-03T10:16:21.973+0000",
+    "volume": 319767.0,
+    "turnover": 28.212856174373286
+  }
+}
+
+```
+
+### 获取最近24小时的成交统计数据
+
+- 地址
+
+```http
+GET /api/futures/public/kLine/tradeStatistics
+```
+
+- 请求参数
+
+| 字段    | 类型   | 说明                                              | 备注 |
+| ------- | ------ | ------------------------------------------------- | ---- |
+| symbols | String | 合约名称，多个合约以逗号分隔，eg: XBTCUSD,XETHUSD | 必填 |
+
+- 响应
+
+```json
+{
+  "code": 0,
+  "message": "OK",
+  "result": [
+    {
+      "symbol": "XBTCUSD",
+      "maxPrice": 11723.0,
+      "minPrice": 11179.0,
+      "priceChange": -399.0,
+      "priceChangeRatio": -0.03404146403890453,
+      "volume": 1.184787737E9,
+      "turnover": 104064.50379496589,
+      "lastPrice": 11322.0,
+      "volumeRatioList": null
+    },
+    {
+      "symbol": "XETHUSD",
+      "maxPrice": 468.75,
+      "minPrice": 421.45,
+      "priceChange": -38.75,
+      "priceChangeRatio": -0.08266666666666667,
+      "volume": 4.95616496E8,
+      "turnover": 1128724.240075755,
+      "lastPrice": 430.0,
+      "volumeRatioList": null
+    }
+  ]
 }
 ```
 
-- 响应状态
+### 获取系统合约持仓量。
+
+- 地址
+
+```http
+GET /api/futures/public/kLine/openInterest
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明                                                         | 备注 |
+| ------ | ------ | ------------------------------------------------------------ | ---- |
+| symbol | String | 合约名称，eg: BTCUSD （注意：和合约名称进行区分，标记名前去掉X） | 必填 |
+
+- 响应
 
 ```json
-ACCEPTED:{ "channel":"statistics_24", "symbol":"HUB_USDT,BTC_USDT,ETH_USDT,LTC_USDT,EOS_USDT,ETH_BTC" }
+{
+  "code": 0,
+  "message": "OK",
+  "result": {
+    "symbol": "BTCUSD",
+    "value": 31865.068938608492,
+    "date": "2020-09-03T10:21:27.659+0000",
+    "qty": 3.60361268E8
+  }
+}
 ```
+
+
+
+##  行情 WebSocket API 
+
+#### 链接
+
+***wss://api.hubi.com/ws/futures/public/market*** 
+
+或 
+
+***wss://api.hubi.pub/ws/futures/public/market（国内）***
+
+### 指令格式
+
+#### 订阅数据更新
+
+订阅数据的动态更新，需要指定具体的 channel，以及需要的参数
+
 ```json
-{"code":406,"message":"NOT_ACCEPTABLE","sid":"7bfdceea"}
+{"op":"subscribe", "channel":"xxxxxx", ...}
 ```
 
-- 返回对象说明
+#### 数据更新
 
-| 字段   | 类型   | 说明 |
-| ------ | ------ | ---- |
-| data | Array |  |
-| data.high   | String | 24小时内最高价 |
-| data.low    | String | 24小时内最低价 |
-| data.new    | String | 最新成交价，等于price（兼容原接口） |
-| data.price  | String | 最新成交价 |
-| data.rate   | String | 涨跌幅 |
-| data.symbol | String | 交易对 |
-| data.time   | String | 时间，精确到秒 |
-| data.volume | String | 成交总量 |
-| dataType | String | 等于订阅参数的`channel` |
-| symbol | String | 等于订阅参数的`symbol` |
-| timestamp | long | 时间戳，精确到毫秒 |
+根据订阅返回更新数据，event 为对应订阅的 channel 路径
+
+```json
+{"event": "xxxxxx", ...}
+```
+
+#### 取消订阅
+
+取消订阅数据的动态更新，与订阅类似，同样需要指定具体的 channel，以及需要的参数
+
+```json
+{"op":"unsubscribe", "channel":"xxxxxx", ...}
+```
+
+###  标记价
+
+订阅格式如下：
+
+```json
+{"op":"subscribe", "channel":"/api/index/price", "key":"BTCUSD"}
+```
+
+数据更新格式如下：
+
+```json
+{
+    "key": "BTCUSD", 
+    "event": "/api/index/price", 
+    "value": 9482.89925, 
+    "updatedTime": "Jun 17, 2020 09:13:43 AM"
+}
+```
+
+取消订阅：
+
+```json
+{"op":"unsubscribe", "channel":"/api/index/price", "key":"BTCUSD"}
+```
+
+### 深度
+
+订阅格式如下：
+
+```json
+{"op":"subscribe", "channel":"/api/depth/depth", "key":"XBTCUSD"}
+```
+
+数据更新格式如下：
+
+```json
+{
+    "buyDepth": [
+        {
+            "price": 9482, 
+            "qty": 160929, 
+            "count": 13, 
+            "iceCount": 0
+        }, 
+        {
+            "price": 9481, 
+            "qty": 130095, 
+            "count": 7, 
+            "iceCount": 0
+        }, 
+        {
+            "price": 9463, 
+            "qty": 384114, 
+            "count": 6, 
+            "iceCount": 0
+        }, 
+        {
+            "price": 9483, 
+            "qty": 0, 
+            "count": 0, 
+            "iceCount": 0
+        }
+    ], 
+    "sellDepth": [
+        {
+            "price": 9483, 
+            "qty": 9331, 
+            "count": 1, 
+            "iceCount": 0
+        }, 
+        {
+            "price": 9494, 
+            "qty": 201324, 
+            "count": 13, 
+            "iceCount": 0
+        }, 
+        {
+            "price": 9503, 
+            "qty": 0, 
+            "count": 0, 
+            "iceCount": 0
+        }
+    ], 
+    "trades": [
+        {
+            "id": "1592385671049000011", 
+            "symbol": "XBTCUSD", 
+            "price": 9482, 
+            "qty": 704, 
+            "buyActive": false, 
+            "timestamp": "Jun 17, 2020 09:21:11 AM"
+        }, 
+        {
+            "id": "1592385671049000008", 
+            "symbol": "XBTCUSD", 
+            "price": 9482, 
+            "qty": 243, 
+            "buyActive": false, 
+            "timestamp": "Jun 17, 2020 09:21:11 AM"
+        }, 
+        {
+            "id": "1592385671049000005", 
+            "symbol": "XBTCUSD", 
+            "price": 9482, 
+            "qty": 866, 
+            "buyActive": false, 
+            "timestamp": "Jun 17, 2020 09:21:11 AM"
+        }, 
+        {
+            "id": "1592385671048000003", 
+            "symbol": "XBTCUSD", 
+            "price": 9483, 
+            "qty": 11596, 
+            "buyActive": true, 
+            "timestamp": "Jun 17, 2020 09:21:11 AM"
+        }
+    ], 
+    "key": "XBTCUSD", 
+    "event": "/api/depth/depth"
+}
+```
+
+取消订阅：
+
+```json
+{"op":"unsubscribe", "channel":"/api/depth/depth", "key":"XBTCUSD"}
+```
+
+### 资金费率
+
+订阅格式如下：
+
+```json
+{"op":"subscribe", "channel":"/api/kLine/fundingRate", "key":"XBTCUSD"}
+```
+
+数据更新格式如下：
+
+```json
+{
+    "key": "XBTCUSD", 
+    "event": "/api/kLine/fundingRate", 
+    "rate": -0.0001, 
+    "date": "Jun 17, 2020 12:00:00 PM"
+}
+```
+
+取消订阅：
+
+```json
+{"op":"unsubscribe", "channel":"/api/kLine/fundingRate", "key":"XBTCUSD"}
+```
+
+### 持仓量
+
+订阅格式如下：
+
+```json
+{"op":"subscribe", "channel":"/api/kLine/openInterest", "key":"BTCUSD"}
+```
+
+数据更新格式如下：
+
+```json
+{
+    "key": "BTCUSD", 
+    "event": "/api/kLine/openInterest", 
+    "value": 6323.8854145971545, 
+    "date": "Jun 17, 2020 09:42:26 AM", 
+    "qty": 60000677
+}
+```
+
+取消订阅：
+
+```json
+{"op":"unsubscribe", "channel":"/api/kLine/openInterest", "key":"BTCUSD"}
+```
+
+### 24小时成交统计
+
+订阅格式如下：
+
+```json
+{"op":"subscribe", "channel":"/api/kLine/tradeStatistics", "key":"XBTCUSD"}
+```
+
+数据更新格式如下：
+
+```json
+{
+    "key": "XBTCUSD", 
+    "event": "/api/kLine/tradeStatistics", 
+    "maxPrice": 9591, 
+    "minPrice": 9396, 
+    "priceChange": -9, 
+    "priceChangeRatio": -0.0009483667017913594, 
+    "volume": 476875741, 
+    "turnover": 50260.22409205384, 
+    "lastPrice": 9481, 
+    "volumeRatioList": [
+        0.04125656269781181, 
+        0.3933914651530134, 
+        0.5241644199874432, 
+        0.5129134007442344, 
+        0.5047321924171744, 
+        0.5168734503777649, 
+        0.4990268608778209
+    ]
+}
+```
+
+取消订阅：
+
+```json
+{"op":"unsubscribe", "channel":"/api/kLine/tradeStatistics", "key":"XBTCUSD"}
+```
+
+###  K 线更新
+
+订阅格式如下：
+
+```json
+{"op":"subscribe", "channel":"/api/kLine/kLine", "key":"XBTCUSD", "type":"1M"}
+```
+
+数据更新格式如下：
+
+```json
+{
+    "event": "/api/kLine/kLine", 
+    "key": "XBTCUSD", 
+    "type": "1M", 
+    "open": 9482, 
+    "close": 9481, 
+    "high": 9482, 
+    "low": 9478, 
+    "keyTime": "Jun 17, 2020 09:47:00 AM", 
+    "timeStamp": "Jun 17, 2020 09:47:52 AM", 
+    "volume": 102120, 
+    "turnover": 10.771662545934651
+}
+```
+
+取消订阅：
+
+```json
+{"op":"unsubscribe", "channel":"/api/kLine/kLine", "key":"XBTCUSD", "type":"1M"}
+```
+
+
+
 
 
