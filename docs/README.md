@@ -1,4 +1,6 @@
-# 合约 API 文档
+# 合约 API
+
+现货
 
 ##  接入准备
 
@@ -783,7 +785,7 @@ Content-Type: application/x-www-form-urlencoded; charset=utf-8
 
 | 字段   | 类型   | 说明         | 备注                         |
 | ------ | ------ | ------------ | ---------------------------- |
-| order_no | String | 结算币种 | 必填 |
+| order_no | String | 订单编号 | 必填 |
 | quantity | Double | 数量 | 可选 |
 | price | Double | 价格 | 可选 |
 | trigger_price | Double | 条件单触发价 | 可选 |

@@ -12,6 +12,7 @@ import requests
 import logging
 
 DEFAULT_CHARSET = 'utf-8'
+version = '1.0.0'
 BASE_URL = 'https://api.hubi.pub'
 KEY = "***"
 SECRET = "***"
@@ -20,7 +21,7 @@ HMAC_KEY = SECRET.encode(DEFAULT_CHARSET)
 
 
 def sign(path: str, params: dict = {}):
-    version = '1.0.0'
+
     timestamp = datetime.datetime.utcnow().isoformat(timespec='milliseconds') + 'Z'
     nonce = f'{KEY}{timestamp }{random.random()}'
     nonceHash = hashlib.md5(nonce.encode(DEFAULT_CHARSET)).hexdigest().lower()
@@ -47,6 +48,7 @@ def sign(path: str, params: dict = {}):
 
 def get(path: str, params: dict = {}):
     headers = sign(path, params)
+
     return requests.get(BASE_URL+path, params=params, headers=headers)
 
 
@@ -87,42 +89,6 @@ def ref_data():
           "tick": 0.01,
           "lotSize": 1.0,
           "type": "PERP"
-        },
-        {
-          "symbol": "XBCHUSD",
-          "tick": 0.05,
-          "lotSize": 1.0,
-          "type": "PERP"
-        },
-        {
-          "symbol": "XLINKUSD",
-          "tick": 0.005,
-          "lotSize": 1.0,
-          "type": "PERP"
-        },
-        {
-          "symbol": "XDOTUSD",
-          "tick": 0.005,
-          "lotSize": 1.0,
-          "type": "PERP"
-        },
-        {
-          "symbol": "XXTZUSD",
-          "tick": 0.001,
-          "lotSize": 1.0,
-          "type": "PERP"
-        },
-        {
-          "symbol": "XCOMPUSD",
-          "tick": 0.05,
-          "lotSize": 1.0,
-          "type": "PERP"
-        },
-        {
-          "symbol": "XBANDUSD",
-          "tick": 0.005,
-          "lotSize": 1.0,
-          "type": "PERP"
         }
       ]
     }
@@ -151,7 +117,7 @@ def last_price():
     } 
     """
     path = '/api/futures/public/basic/lastPrice'
-    response = get(path, params)
+    response = get(path)
     print(response.text)
     return response
 
@@ -224,7 +190,7 @@ def kline_latest(symbol: str, type: str):
 
 
 def fundingRate(symbols: str):
-    r"""获取资金费率。
+    r"""获取资金费率
     请求频次限定：5次/秒/IP。
 
     :param symbols 合约名称，多个合约以逗号分隔，eg: XBTCUSD,XETHUSD
@@ -266,12 +232,12 @@ def open_interest(symbol: str):
 
 
 if __name__ == '__main__':
-    ref_data()
+    # ref_data()
+    # last_price()
     # price('BTCUSD,ETHUSD')
     # depth('XBTCUSD')
     # trades('XBTCUSD', '')
     # kline_latest('XBTCUSD', '5M')
     # fundingRate('XBTCUSD,XETHUSD')
-    # trade_stats('XBTCUSD,XETHUSD')
     # trade_stats('XBTCUSD,XETHUSD')
     # open_interest('BTCUSD')
