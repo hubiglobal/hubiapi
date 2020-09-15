@@ -268,29 +268,3 @@ class TraceClient(BaseClient):
         response = self.post(path, params)
         print(response.text)
         return response
-
-
-DEFAULT_CHARSET = 'utf-8'
-version = '1.0.0'
-BASE_URL = 'http://api-hubi.test.uutaka.com'
-KEY = '093b18985af740bba7c31de5a0f32840'
-SECRET = '86af4d95bf934945904138705d7e6c5b'
-ACCESS_TOKEN = '9410a41c-6c6e-4d4d-9793-b592de443b17'
-HMAC_KEY = SECRET.encode(DEFAULT_CHARSET)
-
-if __name__ == '__main__':
-    client = TraceClient(BASE_URL, KEY, SECRET, ACCESS_TOKEN)
-    client.list_symbol()
-    # client.query_active_orders('ETHUSD')
-    # client.query_accounts()
-    # client.query_position()
-    # client.switch_to_cross('USDT')
-    # client.change_position_leverage('USDT', 'ETHUSD', 20)
-    # client.close_position('USDT', 'ETHUSD', 'LONG')
-    # client.enter_order('USDT', 'ETHUSD', 'true', '100', '372',
-    #             'BUY', 'LIMIT', stop_loss_price='200')
-    # client.enter_order('USDT', 'ETHUSD', 'false', '100',  'SELL', 'MARKET')
-    # client.query_order('O150-20200910-061812-837-2192')
-    # client.amend_order('O150-20200910-061812-837-2192', price='373')
-    # client.risk_setting('USDT', 'ETHUSD', 'LONG',
-    #              stop_loss_price='300', stop_win_price='400', stop_win_type='MARKET')
