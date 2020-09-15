@@ -1020,6 +1020,150 @@ GET /api/futures/public/depth/trades
 
 ```
 
+### 通过下标索引获取历史 K 线
+
+- 地址
+
+```http
+GET /api/futures/public/kLine/byIndex
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明                  | 备注 |
+| ------ | ------ | --------------------- | ---- |
+| symbol | String | 合约名称，eg: XBTCUSD | 必填 |
+| type   | String | K线类型,eg: 5M 15M 1H | 必填 |
+| step   | int    | 返回的数据量，eg:10   | 必填 |
+| from   | Long   | 起始时间戳            | 必填 |
+
+- 响应
+
+```json
+{
+  "code": 0,
+  "message": "OK",
+  "result": [
+    {
+      "source": null,
+      "symbol": "XBTCUSD",
+      "open": 10672.0,
+      "close": 10654.0,
+      "high": 10674.0,
+      "low": 10651.0,
+      "keyTime": "2020-09-15T08:40:00.000+0000",
+      "timeStamp": "2020-09-15T08:40:29.374+0000",
+      "volume": 1905671.0,
+      "turnover": 178.73180788365713
+    },
+    {
+      "source": null,
+      "symbol": "XBTCUSD",
+      "open": 10710.0,
+      "close": 10672.0,
+      "high": 10720.0,
+      "low": 10668.0,
+      "keyTime": "2020-09-15T08:35:00.000+0000",
+      "timeStamp": "2020-09-15T08:39:59.971+0000",
+      "volume": 2760924.0,
+      "turnover": 258.3779874651953
+    },
+    {
+      "source": null,
+      "symbol": "XBTCUSD",
+      "open": 10723.0,
+      "close": 10712.0,
+      "high": 10723.0,
+      "low": 10710.0,
+      "keyTime": "2020-09-15T08:30:00.000+0000",
+      "timeStamp": "2020-09-15T08:34:59.971+0000",
+      "volume": 602240.0,
+      "turnover": 56.18765650652743
+    },
+    {
+      "source": null,
+      "symbol": "XBTCUSD",
+      "open": 10724.0,
+      "close": 10725.0,
+      "high": 10729.0,
+      "low": 10721.0,
+      "keyTime": "2020-09-15T08:25:00.000+0000",
+      "timeStamp": "2020-09-15T08:29:58.190+0000",
+      "volume": 813461.0,
+      "turnover": 75.84876072793301
+    }
+  ]
+}
+
+```
+
+### 通过时间索引获取历史 K 线
+
+- 地址
+
+```http
+GET /api/futures/public/kLine/byTime
+```
+
+- 请求参数
+
+| 字段   | 类型   | 说明                  | 备注 |
+| ------ | ------ | --------------------- | ---- |
+| symbol | String | 合约名称，eg: XBTCUSD | 必填 |
+| type   | String | K线类型,eg: 5M 15M 1H | 必填 |
+| step   | int    | 返回的数据量，eg:10   | 必填 |
+| from   | Long   | 起始时间戳            | 可选 |
+
+- 响应
+
+```json
+{
+  "code": 0,
+  "message": "OK",
+  "result": [
+    {
+      "source": null,
+      "symbol": "XBTCUSD",
+      "open": 10672.0,
+      "close": 10638.0,
+      "high": 10674.0,
+      "low": 10613.0,
+      "keyTime": "2020-09-15T08:40:00.000+0000",
+      "timeStamp": "2020-09-15T08:42:34.654+0000",
+      "volume": 8093755.0,
+      "turnover": 759.9430209689488
+    },
+    {
+      "source": null,
+      "symbol": "XBTCUSD",
+      "open": 10710.0,
+      "close": 10672.0,
+      "high": 10720.0,
+      "low": 10668.0,
+      "keyTime": "2020-09-15T08:35:00.000+0000",
+      "timeStamp": "2020-09-15T08:39:59.971+0000",
+      "volume": 2760924.0,
+      "turnover": 258.3779874651953
+    },
+    {
+      "source": null,
+      "symbol": "XBTCUSD",
+      "open": 10723.0,
+      "close": 10712.0,
+      "high": 10723.0,
+      "low": 10710.0,
+      "keyTime": "2020-09-15T08:30:00.000+0000",
+      "timeStamp": "2020-09-15T08:34:59.971+0000",
+      "volume": 602240.0,
+      "turnover": 56.18765650652743
+    }
+  ]
+}
+
+```
+
+
+
 ### 获取最新一根 K 线数据
 
 - 地址
