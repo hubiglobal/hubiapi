@@ -16,28 +16,28 @@ class DirectionType(Enum):
 
 
 class ExchangePlatform(Enum):
-    HUBI = 1
-    OKEX = 2
-    HUOBI = 3
-    BITMEX = 4
+    HUBI = 'HUBI'
+    OKEX = 'OKEX'
+    HUOBI = 'HUOBI'
+    BITMEX = 'BITMEX'
 
 
 class OrderType(Enum):
-    LIMIT = 1
-    MARKET = 2
-    ALGO = 3
+    LIMIT = 'LIMIT'
+    MARKET = 'MARKET'
+    ALGO = 'ALGO'
 
 
 class AlgoType(Enum):
-    LIMIT = 1
-    MARKET = 2
+    LIMIT = 'LIMIT'
+    MARKET = 'MARKET'
 
 
 class CanaryClient(BaseClient):
     def __init__(self, base_url, key, secret, token):
         super(CanaryClient, self).__init__(base_url, key, secret, token)
 
-    def asset(self, platform: ExchangePlatform = ExchangePlatform.HUBI, symbol: str, coinCode: str):
+    def asset(self, platform: ExchangePlatform, symbol: str, coinCode: str):
         r"""获取资产
 
         """
@@ -47,11 +47,11 @@ class CanaryClient(BaseClient):
             'symbol': symbol,
             'coinCode': coinCode
         }
-        response = self.post(path, json=params)
+        response = self.get(path, params)
         print(response.text)
         return response
 
-    def order_current_current(self, platform=ExchangePlatform.HUBI, symbol='BTCUSD', page=0, size=10):
+    def order_current_current(self, platform: ExchangePlatform, symbol: str, page=0, size=10):
         r"""当前委托
 
         """
@@ -66,7 +66,7 @@ class CanaryClient(BaseClient):
         print(response.text)
         return response
 
-    def position(self, platform=ExchangePlatform.HUBI, symbol='BTCUSD', page=0, size=10):
+    def position(self, platform: ExchangePlatform, symbol: str, page=0, size=10):
         r"""当前仓位
 
         """
@@ -81,7 +81,7 @@ class CanaryClient(BaseClient):
         print(response.text)
         return response
 
-    def order_place(self, platform=ExchangePlatform.HUBI, symbol='BTCUSD', coin_code: str, symbol: str, direction: DirectionType, size: str, order_type: OrderType,
+    def order_place(self, platform: ExchangePlatform, coin_code: str, symbol: str, direction: DirectionType, size: str, order_type: OrderType,
                     price: str = None, trigger_price: str = None, algo_price: str = None, algo_type: AlgoType = None,
                     stop_win_price: str = None, stop_loss_price: str = None):
         r"""下单
@@ -117,7 +117,7 @@ class CanaryClient(BaseClient):
         if trigger_price is not None:
             params['triggerPrice'] = trigger_price
         if algo_price is not None:
-            params['algoPrice'] = algoPrice
+            params['algoPrice'] = algo_price
         if algo_type is not None:
             params['algoType'] = algo_type
         if stop_win_price is not None:
@@ -129,7 +129,7 @@ class CanaryClient(BaseClient):
         print(response.text)
         return response
 
-    def order_cancel(self, platform=ExchangePlatform.HUBI, order_id, type):
+    def order_cancel(self, platform: ExchangePlatform, order_id: str, type: AlgoType):
         r"""撤销合约订单
 
         :param platform 平台
@@ -146,7 +146,7 @@ class CanaryClient(BaseClient):
         print(response.text)
         return response
 
-    def algo_current_list(self, platform=ExchangePlatform.HUBI, symbol='BTCUSD', page=0, size=10):
+    def algo_current_list(self, platform: ExchangePlatform, symbol: str, page=0, size=10):
         r"""当前委托 - 条件单
 
         :param platform 平台
@@ -165,7 +165,7 @@ class CanaryClient(BaseClient):
         print(response.text)
         return response
 
-    def order_fills(self, platform=ExchangePlatform.HUBI, symbol, begin, end, page=0, size=10):
+    def order_fills(self, platform: ExchangePlatform, symbol: str, begin: str, end: str, page: int = 0, size: int = 10):
         r"""成交历史
 
         :param platform 平台
@@ -188,7 +188,8 @@ class CanaryClient(BaseClient):
         print(response.text)
         return response
 
-    def order_history_list(self, platform=ExchangePlatform.HUBI, symbol, begin, end, client_oid=None, order_id=None):
+    def order_history_list(self, platform: ExchangePlatform, symbol: str, begin: str, end: str, client_oid: str = None, order_id: str = None,
+                           page: int = 0, size: int = 10):
         r"""委托历史
 
         :param platform 平台
@@ -216,3 +217,14 @@ class CanaryClient(BaseClient):
         response = self.post(path, json=params)
         print(response.text)
         return response
+
+
+if __name__ == '__main__':
+    # BASE_URL = 'https://api-canary.hubiplus.com'
+    # KEY = '***'
+    # SECRET = '***'
+    # ACCESS_TOKEN = '***'
+
+    canary = CanaryClient(BASE_URL, KEY, SECRET, ACCESS_TOKEN)
+    # canary.asset('HUBI', 'BTCUSDT', 'USDT')
+    canary.order_current_current('HUBI', 'ETTUSDT')

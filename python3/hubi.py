@@ -70,13 +70,11 @@ class HubiClient(BaseClient):
         return response
 
 
-DEFAULT_CHARSET = 'utf-8'
-BASE_URL = 'https://api.hubi.com'
-KEY = "***"
-SECRET = "***"
-ACCESS_TOKEN = "***"
-HMAC_KEY = SECRET.encode(DEFAULT_CHARSET)
-
 if __name__ == '__main__':
+    BASE_URL = 'https://api.hubi.com'
+    KEY = '***'
+    SECRET = '***'
+    ACCESS_TOKEN = '***'
+
     client = HubiClient(BASE_URL, KEY, SECRET, ACCESS_TOKEN)
     # client.user()

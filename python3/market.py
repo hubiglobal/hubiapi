@@ -209,3 +209,23 @@ class MarketClient(BaseClient):
         response = self.get(path, params)
         print(response.text)
         return response
+
+
+if __name__ == '__main__':
+    BASE_URL = 'https://api.hubi.com'
+    KEY = '***'
+    SECRET = '***'
+    ACCESS_TOKEN = '***'
+
+    market = MarketClient(BASE_URL, KEY, SECRET, ACCESS_TOKEN)
+    market.ref_data()
+    # market.last_price()
+    # market.price('BTCUSD,ETHUSD')
+    # market.depth('XBTCUSD')
+    # market.trades('XBTCUSD', '')
+    # market.kline_by_index('XBTCUSD', '5M', 10, 0)
+    # market.kline_by_time('XBTCUSD', '5M', 1)
+    # market.kline_latest('XBTCUSD', '5M')
+    # market.fundingRate('XBTCUSD,XETHUSD')
+    # market.trade_stats('XBTCUSD,XETHUSD')
+    # market.open_interest('BTCUSD')

@@ -1603,5 +1603,20 @@ GET /api/futures/public/kLine/openInterest
 
 
 
+## 错误代码列表
+
+| 错误码             |                描述                |
+| ------------------ | :--------------------------------: |
+| ILLEGAL_NONCE      |      X-API-Nonce 值不合法错误      |
+| ILLEGAL_VERSION    |             版本不兼容             |
+| ILLEGAL_TIMESTAMP  |             时间戳错误             |
+| ILLEGAL_SIGN       |              签名错误              |
+| ILLEGAL_ARGUMENT   |              参数错误              |
+| ILLEGAL_SIGN_TYPE  |           签名类型不正确           |
+| ILLEGAL_CHARSET    |            字符集不合法            |
+| ILLEGAL_ACCESS_KEY |           访问密钥不正确           |
+| ILLEGAL_SCOPE      | 访问范围不合法的，（只读或者读写） |
+| ILLEGAL_CLIENT_IP  |           IP 地址被限制            |
+
 
 

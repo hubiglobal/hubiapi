@@ -23,7 +23,7 @@ class BaseClient(object):
         self.__secret = secret.encode(DEFAULT_CHARSET)
         self.__token = token
 
-    def _sign(self, path: str, params: dict = None):
+    def __sign(self, path: str, params: dict = None):
         if params is None:
             params = {}
         timestamp = datetime.datetime.utcnow().isoformat(timespec='milliseconds') + 'Z'
@@ -51,21 +51,25 @@ class BaseClient(object):
         return headers
 
     def get(self, path: str, params: dict = None):
-        headers = self._sign(path, params)
+        headers = self.__sign(path, params)
         return requests.get(self.__base_url+path, params=params, headers=headers)
 
     def delete(self, path: str, params: dict = None):
-        headers = self._sign(path, params)
+        headers = self.__sign(path, params)
         return requests.delete(self.__base_url + path, params=params, headers=headers)
 
     def put(self, path: str, data: dict = None, json: dict = None):
-        if data is None:
-            data = json
-        headers = self._sign(path, data)
-        return requests.put(self.__base_url + path, data=data, json=json, headers=headers)
+        if json is not None:
+            headers = self.__sign(path, json)
+            return requests.put(self.__base_url + path, json=json, headers=headers)
+
+        headers = self.__sign(path, data)
+        return requests.put(self.__base_url + path, data=data, headers=headers)
 
     def post(self, path: str, data: dict = None, json: dict = None):
-        if data is None:
-            data = json
-        headers = self._sign(path, data)
-        return requests.post(self.__base_url + path, data=data, json=json, headers=headers)
+        if json is not None:
+            headers = self.__sign(path, json)
+            return requests.post(self.__base_url + path, json=json, headers=headers)
+
+        headers = self.__sign(path, data)
+        return requests.post(self.__base_url + path, data=data, headers=headers)

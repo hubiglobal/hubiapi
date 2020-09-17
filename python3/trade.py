@@ -268,3 +268,28 @@ class TraceClient(BaseClient):
         response = self.post(path, params)
         print(response.text)
         return response
+
+
+if __name__ == '__main__':
+    BASE_URL = 'https://api.hubi.com'
+    KEY = '***'
+    SECRET = '***'
+    ACCESS_TOKEN = '***'
+
+    trade = TraceClient(BASE_URL, KEY, SECRET, ACCESS_TOKEN)
+    trade.cancel_order_batch(
+        'O150-20200915-092107-767-2460,O150-20200915-113808-323-2224')
+    # trade.list_symbol()
+    # trade.query_active_orders('ETHUSD')
+    # trade.query_accounts()
+    # trade.query_position()
+    # trade.switch_to_cross('USDT')
+    # trade.change_position_leverage('USDT', 'ETHUSD', 20)
+    # trade.close_position('USDT', 'ETHUSD', 'LONG')
+    # trade.enter_order('USDT', 'ETHUSD', 'true', '100', '372',
+    #             'BUY', 'LIMIT', stop_loss_price='200')
+    # trade.enter_order('USDT', 'ETHUSD', 'false', '100',  'SELL', 'MARKET')
+    # trade.query_order('O150-20200910-061812-837-2192')
+    # trade.amend_order('O150-20200910-061812-837-2192', price='373')
+    # trade.risk_setting('USDT', 'ETHUSD', 'LONG',
+    #              stop_loss_price='300', stop_win_price='400', stop_win_type='MARKET')
