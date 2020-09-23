@@ -47,7 +47,7 @@ class MarketClient(BaseClient):
         }
 
         """
-        path = '/api/futures/public/basic/refData'
+        path = '/api/futures/public/ref_data'
         response = self.get(path)
         print(response.text)
         return response
@@ -68,7 +68,7 @@ class MarketClient(BaseClient):
         }
         }
         """
-        path = '/api/futures/public/basic/lastPrice'
+        path = '/api/futures/public/last_price'
         response = self.get(path)
         print(response.text)
         return response
@@ -93,7 +93,7 @@ class MarketClient(BaseClient):
         ]
         }
         """
-        path = '/api/futures/public/index/price'
+        path = '/api/futures/public/index_price'
         params = {'symbols': symbols}
         response = self.get(path, params)
         print(response.text)
@@ -130,7 +130,7 @@ class MarketClient(BaseClient):
         请求频次限定：15次/分/IP
         """
 
-        path = '/api/futures/public/kLine/byIndex'
+        path = '/api/futures/public/kline/by_index'
         params = {
             'symbol': symbol,
             'type': type,
@@ -146,7 +146,7 @@ class MarketClient(BaseClient):
         请求频次限定：15次/分/IP
         """
 
-        path = '/api/futures/public/kLine/byTime'
+        path = '/api/futures/public/kline/by_time'
         params = {
             'symbol': symbol,
             'type': type,
@@ -165,20 +165,20 @@ class MarketClient(BaseClient):
         请求频次限定：75次/分/IP
         """
 
-        path = '/api/futures/public/kLine/latest'
+        path = '/api/futures/public/kline/latest'
         params = {'symbol': symbol, 'type': type}
         response = self.get(path, params)
         print(response.text)
         return response
 
-    def fundingRate(self, symbols: str):
+    def funding_rate(self, symbols: str):
         r"""获取资金费率
         请求频次限定：5次/秒/IP。
 
         :param symbols 合约名称，多个合约以逗号分隔，eg: XBTCUSD,XETHUSD
         """
 
-        path = '/api/futures/public/kLine/fundingRate'
+        path = '/api/futures/public/kline/funding_rate'
         params = {'symbols': symbols}
         response = self.get(path, params)
         print(response.text)
@@ -191,7 +191,7 @@ class MarketClient(BaseClient):
         :param symbols 合约名称，多个合约以逗号分隔，eg: XBTCUSD,XETHUSD
         """
 
-        path = '/api/futures/public/kLine/tradeStatistics'
+        path = '/api/futures/public/kline/trade_statistics'
         params = {'symbols': symbols}
         response = self.get(path, params)
         print(response.text)
@@ -204,7 +204,7 @@ class MarketClient(BaseClient):
         :param symbol 合约名称，eg: BTCUSD （注意：和合约名称进行区分，标记名前去掉X）
         """
 
-        path = '/api/futures/public/kLine/openInterest'
+        path = '/api/futures/public/kline/open_interest'
         params = {'symbol': symbol}
         response = self.get(path, params)
         print(response.text)
