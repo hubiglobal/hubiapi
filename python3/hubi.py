@@ -3,7 +3,10 @@
 
 # pip3 install requests
 
+import logging
 from base import BaseClient
+
+log = logging.getLogger('HubiClient')
 
 
 class HubiClient(BaseClient):
@@ -13,40 +16,40 @@ class HubiClient(BaseClient):
     def user(self):
         path = '/api/user'
         response = self.get(path)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def coin_base_info(self):
         path = '/api/coin/coin_base_info/simple'
         response = self.get(path)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def coin_pairs_info(self):
         path = '/api/coin/coin_pairs_param/pairses'
         response = self.get(path)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def entrust(self, entrust_number: str):
         path = '/api/entrust/info'
         params = {"entrust_number": "entrust_number"}
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def order(self, entrust_number: str):
         path = '/api/entrust/order/info'
         params = {'entrust_number': entrust_number}
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def top(self, coin_code: str, price_coin_code: str, top: int = 10):
         path = '/api/entrust/current/top'
         params = {'coin_code': coin_code, 'price_coin_code': price_coin_code}
         response = self.post(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def fixed(self, coin_code: str, price_coin_code: str, direction: str, price: str, count: str, password: str):
@@ -58,15 +61,15 @@ class HubiClient(BaseClient):
                   'entrust_count': count,
                   'trade_password': password
                   }
-        response = selfpost(path, params)
-        print(response.text)
+        response = self.post(path, params)
+        log.debug(response.text)
         return response
 
     def cancel(self, entrust_number: str):
         path = '/api/engine/entrust/cancel/v1'
         params = {'entrust_number': entrust_number}
         response = self.put(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
 

@@ -12,6 +12,7 @@ import requests
 import logging
 
 DEFAULT_CHARSET = 'utf-8'
+log = logging.getLogger('BaseClient')
 
 
 class BaseClient(object):
@@ -36,8 +37,8 @@ class BaseClient(object):
         sign = hmac.new(key=self.__secret, msg=content.encode(
             DEFAULT_CHARSET), digestmod=hashlib.sha256).hexdigest().lower()
 
-        print("content: ", content)
-        print("sign: ", sign)
+        log.debug('content: %s', content)
+        log.debug('sign: %s', sign)
 
         headers = {}
         headers['Authorization'] = 'Bearer ' + self.__token

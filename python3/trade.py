@@ -3,7 +3,10 @@
 
 # pip3 install requests
 
+import logging
 from base import BaseClient
+
+log = logging.getLogger('TraceClient')
 
 
 class TraceClient(BaseClient):
@@ -16,7 +19,7 @@ class TraceClient(BaseClient):
         """
         path = '/api/futures/public/list_symbol'
         response = self.get(path)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def query_active_orders(self, symbol: str):
@@ -27,7 +30,7 @@ class TraceClient(BaseClient):
         path = '/api/futures/query_active_orders'
         params = {'symbol': symbol}
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def query_orders_pro(self, timestamp):
@@ -38,7 +41,7 @@ class TraceClient(BaseClient):
         path = '/api/futures/query_orders_pro'
         params = {"timestamp": timestamp}
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def query_order(self, order_no: str):
@@ -49,7 +52,7 @@ class TraceClient(BaseClient):
         path = '/api/futures/query_order_by_id'
         params = {"order_no": order_no}
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def query_accounts(self):
@@ -57,7 +60,7 @@ class TraceClient(BaseClient):
         """
         path = '/api/futures/query_accounts'
         response = self.get(path)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def query_position(self):
@@ -65,7 +68,7 @@ class TraceClient(BaseClient):
         """
         path = '/api/futures/query_position'
         response = self.get(path)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def enter_order(self, coin_code: str, symbol: str, open_position: bool, quantity: str, trade_direction: str, order_type: str,
@@ -114,7 +117,7 @@ class TraceClient(BaseClient):
         if tif_type is not None:
             params['tif_type'] = tif_type
         response = self.post(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def cancel_order(self, order_no: str):
@@ -125,7 +128,7 @@ class TraceClient(BaseClient):
         path = '/api/futures/cancel_order'
         params = {'order_no': order_no}
         response = self.post(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def cancel_order_batch(self, order_nos: str):
@@ -136,7 +139,7 @@ class TraceClient(BaseClient):
         path = '/api/futures/cancel_order_batch'
         params = {'order_nos': order_nos}
         response = self.post(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def close_position(self, coin_code: str, symbol: str, position_type: str):
@@ -151,7 +154,7 @@ class TraceClient(BaseClient):
                   'symbol': symbol,
                   'position_type': position_type}
         response = self.post(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def switch_to_cross(self, coin_code: str):
@@ -162,7 +165,7 @@ class TraceClient(BaseClient):
         path = '/api/futures/switch_to_cross'
         params = {'coin_code': coin_code}
         response = self.post(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def switch_position_side(self, coin_code: str, two_side_position: str):
@@ -175,7 +178,7 @@ class TraceClient(BaseClient):
         params = {'coin_code': coin_code,
                   'two_side_position': two_side_position}
         response = self.post(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def change_position_leverage(self, coin_code: str, symbol: str, leverage: int):
@@ -192,7 +195,7 @@ class TraceClient(BaseClient):
             'leverage': leverage
         }
         response = self.post(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def amend_order(self, order_no: str,
@@ -231,7 +234,7 @@ class TraceClient(BaseClient):
             params['trigger_type'] = trigger_type
 
         response = self.post(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def risk_setting(self, coin_code: str, symbol: str, position_type: str,
@@ -266,7 +269,7 @@ class TraceClient(BaseClient):
             params['stop_win_type'] = stop_win_type
 
         response = self.post(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
 
@@ -277,8 +280,8 @@ if __name__ == '__main__':
     ACCESS_TOKEN = '***'
 
     trade = TraceClient(BASE_URL, KEY, SECRET, ACCESS_TOKEN)
-    trade.cancel_order_batch(
-        'O150-20200915-092107-767-2460,O150-20200915-113808-323-2224')
+    # trade.cancel_order_batch(
+    #     'O150-20200915-092107-767-2460,O150-20200915-113808-323-2224')
     # trade.list_symbol()
     # trade.query_active_orders('ETHUSD')
     # trade.query_accounts()

@@ -3,7 +3,7 @@
 
 # pip3 install requests
 
-
+import logging
 from enum import Enum
 from base import BaseClient
 
@@ -33,6 +33,9 @@ class AlgoType(Enum):
     MARKET = 'MARKET'
 
 
+log = logging.getLogger('CanaryClient')
+
+
 class CanaryClient(BaseClient):
     def __init__(self, base_url, key, secret, token):
         super(CanaryClient, self).__init__(base_url, key, secret, token)
@@ -48,7 +51,7 @@ class CanaryClient(BaseClient):
             'coinCode': coinCode
         }
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def order_current_current(self, platform: ExchangePlatform, symbol: str, page=0, size=10):
@@ -63,7 +66,7 @@ class CanaryClient(BaseClient):
             'size': size
         }
         response = self.post(path, json=params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def position(self, platform: ExchangePlatform, symbol: str, page=0, size=10):
@@ -78,7 +81,7 @@ class CanaryClient(BaseClient):
             'size': size
         }
         response = self.post(path, json=params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def order_place(self, platform: ExchangePlatform, coin_code: str, symbol: str, direction: DirectionType, size: str, order_type: OrderType,
@@ -126,7 +129,7 @@ class CanaryClient(BaseClient):
             params['stopLossPrice'] = stop_loss_price
 
         response = self.post(path, json=params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def order_cancel(self, platform: ExchangePlatform, order_id: str, type: AlgoType):
@@ -143,7 +146,7 @@ class CanaryClient(BaseClient):
             'type': type,
         }
         response = self.put(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def algo_current_list(self, platform: ExchangePlatform, symbol: str, page=0, size=10):
@@ -162,7 +165,7 @@ class CanaryClient(BaseClient):
             'size': size
         }
         response = self.post(path, json=params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def order_fills(self, platform: ExchangePlatform, symbol: str, begin: str, end: str, page: int = 0, size: int = 10):
@@ -185,7 +188,7 @@ class CanaryClient(BaseClient):
             'size': size
         }
         response = self.post(path, json=params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def order_history_list(self, platform: ExchangePlatform, symbol: str, begin: str, end: str, client_oid: str = None, order_id: str = None,
@@ -215,7 +218,7 @@ class CanaryClient(BaseClient):
 
         path = '/api/canary/order/history/list'
         response = self.post(path, json=params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
 
@@ -225,6 +228,6 @@ if __name__ == '__main__':
     # SECRET = '***'
     # ACCESS_TOKEN = '***'
 
-    canary = CanaryClient(BASE_URL, KEY, SECRET, ACCESS_TOKEN)
+    # canary = CanaryClient(BASE_URL, KEY, SECRET, ACCESS_TOKEN)
     # canary.asset('HUBI', 'BTCUSDT', 'USDT')
-    canary.order_current_current('HUBI', 'ETTUSDT')
+    # canary.order_current_current('HUBI', 'ETTUSDT')

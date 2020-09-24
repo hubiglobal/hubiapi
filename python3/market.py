@@ -3,8 +3,10 @@
 
 # pip3 install requests
 
-
+import logging
 from base import BaseClient
+
+log = logging.getLogger('MarketClient')
 
 
 class MarketClient(BaseClient):
@@ -42,7 +44,7 @@ class MarketClient(BaseClient):
         """
         path = '/api/futures/public/ref_data'
         response = self.get(path)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def last_price(self):
@@ -68,7 +70,7 @@ class MarketClient(BaseClient):
         """
         path = '/api/futures/public/last_price'
         response = self.get(path)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def price(self, symbols: str):
@@ -90,7 +92,7 @@ class MarketClient(BaseClient):
         path = '/api/futures/public/index_price'
         params = {'symbols': symbols}
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def depth(self, symbol: str):
@@ -98,12 +100,12 @@ class MarketClient(BaseClient):
 
         :param symbol 合约名称，eg: BTCUSD。
         :return
-        
+
         """
         path = '/api/futures/public/depth/depth'
         params = {'symbol': symbol}
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def trades(self, symbol: str, sequence: str):
@@ -116,7 +118,7 @@ class MarketClient(BaseClient):
         path = '/api/futures/public/depth/trades'
         params = {'symbol': symbol, 'sequence': sequence}
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def kline_by_index(self, symbol: str, type: str, step: int, time):
@@ -132,7 +134,7 @@ class MarketClient(BaseClient):
             'from': time
         }
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def kline_by_time(self, symbol: str, type: str, step: int, time=None):
@@ -151,7 +153,7 @@ class MarketClient(BaseClient):
             params['from'] = time,
 
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def kline_latest(self, symbol: str, type: str):
@@ -162,7 +164,7 @@ class MarketClient(BaseClient):
         path = '/api/futures/public/kline/latest'
         params = {'symbol': symbol, 'type': type}
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def funding_rate(self, symbols: str):
@@ -175,7 +177,7 @@ class MarketClient(BaseClient):
         path = '/api/futures/public/kline/funding_rate'
         params = {'symbols': symbols}
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def trade_stats(self, symbols: str):
@@ -188,7 +190,7 @@ class MarketClient(BaseClient):
         path = '/api/futures/public/kline/trade_statistics'
         params = {'symbols': symbols}
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
     def open_interest(self, symbol: str):
@@ -201,7 +203,7 @@ class MarketClient(BaseClient):
         path = '/api/futures/public/kline/open_interest'
         params = {'symbol': symbol}
         response = self.get(path, params)
-        print(response.text)
+        log.debug(response.text)
         return response
 
 
