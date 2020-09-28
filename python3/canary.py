@@ -228,6 +228,6 @@ if __name__ == '__main__':
     # SECRET = '***'
     # ACCESS_TOKEN = '***'
 
-    # canary = CanaryClient(BASE_URL, KEY, SECRET, ACCESS_TOKEN)
+    canary = CanaryClient(BASE_URL, KEY, SECRET, ACCESS_TOKEN)
     # canary.asset('HUBI', 'BTCUSDT', 'USDT')
     # canary.order_current_current('HUBI', 'ETTUSDT')
