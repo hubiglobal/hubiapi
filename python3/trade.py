@@ -71,6 +71,21 @@ class TraceClient(BaseClient):
         log.debug(response.text)
         return response
 
+    def ledger(self, currency, latest_id='0', page=0, page_size=10):
+        r"""查询仓位
+        """
+        path = '/api/futures/trade/ledger'
+        params = {
+            'coin_code': currency,
+            'page_no': page,
+            'page_size': page_size,
+            'from': latest_id
+        }
+
+        response = self.get(path, params)
+        log.debug(response.text)
+        return response
+
     def enter_order(self, coin_code: str, symbol: str, open_position: bool, quantity: str, trade_direction: str, order_type: str,
                     price: str = None, stop_loss_price: str = None, trailing_stop: str = None, stop_win_price: str = None, stop_win_type: str = None,
                     trigger_price: str = None, trigger_type: str = 'LAST', tif_type: str = 'GOOD_TILL_CANCEL'):
@@ -280,6 +295,8 @@ if __name__ == '__main__':
     ACCESS_TOKEN = '***'
 
     trade = TraceClient(BASE_URL, KEY, SECRET, ACCESS_TOKEN)
+    # trade.ledger('USDT', 'AC150-20200928-120000-002-2310', 10, 0)
+
     # trade.cancel_order_batch(
     #     'O150-20200915-092107-767-2460,O150-20200915-113808-323-2224')
     # trade.list_symbol()

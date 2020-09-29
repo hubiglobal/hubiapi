@@ -7,10 +7,7 @@ import okhttp3.Response;
 import org.hubi.api.AccessKeys;
 import org.hubi.api.BaseClient;
 import org.hubi.api.HttpClient;
-import org.hubi.api.contract.domain.AssetAccount;
-import org.hubi.api.contract.domain.Order;
-import org.hubi.api.contract.domain.Position;
-import org.hubi.api.contract.domain.StringResult;
+import org.hubi.api.contract.domain.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -119,6 +116,27 @@ public class TradeClient extends BaseClient {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 查询交易账本流水
+     */
+    public List<TradeLedger> tradeLedger(String currency, int page, int pageSize, String from) {
+        String url = "/api/futures/trade/ledger";
+        Map<String, String> params = ImmutableMap.<String, String>builder()
+            .put("coin_code", currency)
+            .put("page", String.valueOf(page))
+            .put("page_size", String.valueOf(pageSize))
+            .put("from", from)
+            .build();
+
+        Response response = this.getClient().get(url, params);
+        try {
+            return stringToList(response, TradeLedger.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     /**
      * 获取仓位
